@@ -1,0 +1,9 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+    <ui:with type="com.bertazoli.charity.client.place.NameTokens" field="nameTokens"></ui:with>
+    <g:HTMLPanel>
+        <g:Hyperlink targetHistoryToken="{nameTokens.getLogin}">Login</g:Hyperlink>
+        <g:Hyperlink targetHistoryToken="{nameTokens.getUserSettings}">User Settings</g:Hyperlink>
+    </g:HTMLPanel>
+</ui:UiBinder>
