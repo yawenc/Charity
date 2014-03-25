@@ -2,6 +2,7 @@ package com.bertazoli.charity.client.gin;
 
 import com.bertazoli.charity.client.application.ApplicationModule;
 import com.bertazoli.charity.client.place.NameTokens;
+import com.gwtplatform.dispatch.rpc.client.gin.RpcDispatchAsyncModule;
 import com.gwtplatform.mvp.client.annotations.DefaultPlace;
 import com.gwtplatform.mvp.client.annotations.ErrorPlace;
 import com.gwtplatform.mvp.client.annotations.UnauthorizedPlace;
@@ -18,6 +19,7 @@ public class ClientModule extends AbstractPresenterModule {
     protected void configure() {
         install(new DefaultModule(DefaultPlaceManager.class));
         install(new ApplicationModule());
+        install(new RpcDispatchAsyncModule());
 
         // DefaultPlaceManager Places
         bindConstant().annotatedWith(DefaultPlace.class).to(NameTokens.home);
