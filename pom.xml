@@ -66,7 +66,7 @@
                     <username>root</username>
                     <password>root</password>
                     <clearCheckSums>true</clearCheckSums>
-                    <rollbackTag>bootstrap</rollbackTag>
+                    <rollbackTag>initial</rollbackTag>
                 </configuration>
             </plugin>
             

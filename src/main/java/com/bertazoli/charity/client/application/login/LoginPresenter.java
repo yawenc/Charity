@@ -1,5 +1,7 @@
 package com.bertazoli.charity.client.application.login;
 
+import com.bertazoli.charity.client.application.callback.CustomAsyncCallback;
+import com.bertazoli.charity.client.application.events.login.LoginAuthenticatedEvent;
 import com.bertazoli.charity.client.place.NameTokens;
 import com.bertazoli.charity.shared.action.LoginAction;
 import com.bertazoli.charity.shared.action.LoginResult;
@@ -57,16 +59,33 @@ public class LoginPresenter extends Presenter<LoginPresenter.MyView, LoginPresen
     }
 
     private void doLogin(String username, String password) {
+        dispatcher.execute(new LoginAction(username, password), new CustomAsyncCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult result) {
+                if (result != null) {
+                    getEventBus().fireEvent(new LoginAuthenticatedEvent(result.getUser()));
+                    PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
+                    placeManager.revealPlace(request);
+                }
+            }
+        });
+        
+        /*
         dispatcher.execute(new LoginAction(username, password), new AsyncCallback<LoginResult>() {
             @Override
             public void onFailure(Throwable caught) {
+                System.out.println("here");
             }
 
             @Override
             public void onSuccess(LoginResult result) {
-                PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
-                placeManager.revealPlace(request);
+                if (result != null) {
+                    getEventBus().fireEvent(new LoginAuthenticatedEvent(result.getUser()));
+                    PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
+                    placeManager.revealPlace(request);
+                }
             }
         });
+        */
     }
 }
