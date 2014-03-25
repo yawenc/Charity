@@ -9,6 +9,7 @@ public class ServerModule extends HandlerModule {
 	
     @Override
     protected void configureHandlers() {
-    	bindHandler(LoginAction.class, LoginHandler.class, LoggedInActionValidator.class);
+    	bindHandler(LoginAction.class, LoginHandler.class); // without validation
+    	//bindHandler(LoginAction.class, LoginHandler.class, LoggedInActionValidator.class); // with validation
     }
 }

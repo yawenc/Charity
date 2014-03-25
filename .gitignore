@@ -1,11 +1,12 @@
 *.class
-
+target/
 # Package Files #
 *.jar
 *.war
 .classpath
 .project
 .settings/*
+.factorypath
 
 # gwt caches and compiled units #
 war/gwt_bree/
@@ -17,4 +18,7 @@ gwt-unitCache/
 # more caches and things from deploy #
 war/WEB-INF/deploy/
 war/WEB-INF/classes/
-/target
+src/main/webapp/WEB-INF/deploy/
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/Charity/*
+src/main/webapp/META-INF/*

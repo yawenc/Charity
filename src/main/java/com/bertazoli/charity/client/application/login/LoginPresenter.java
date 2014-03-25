@@ -15,21 +15,25 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.NoGatekeeper;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
+import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 
 @NoGatekeeper
 public class LoginPresenter extends Presenter<LoginPresenter.MyView, LoginPresenter.MyProxy> {
     interface MyView extends View {
-		HasClickHandlers getSubmitButton();
-		boolean validate();
-		String getPassword();
-		String getUsername();
+        HasClickHandlers getSubmitButton();
+        boolean validate();
+        String getPassword();
+        String getUsername();
     }
+    
+    @Inject PlaceManager placeManager;
 
     @NameToken(NameTokens.login)
     @ProxyStandard
     public interface MyProxy extends ProxyPlace<LoginPresenter> {}
-    
+
     private DispatchAsync dispatcher;
 
     @Inject
@@ -37,30 +41,32 @@ public class LoginPresenter extends Presenter<LoginPresenter.MyView, LoginPresen
         super(eventBus, view, proxy, RevealType.Root);
         this.dispatcher = dispatcher;
     }
-    
+
     @Override
     protected void onBind() {
-    	super.onBind();
-    	
-    	getView().getSubmitButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (getView().validate()) {
-					doLogin(getView().getUsername(), getView().getPassword());
-				}
-			}
-		});
+        super.onBind();
+
+        getView().getSubmitButton().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (getView().validate()) {
+                    doLogin(getView().getUsername(), getView().getPassword());
+                }
+            }
+        });
     }
 
-	private void doLogin(String username, String password) {
-		dispatcher.execute(new LoginAction(username, password), new AsyncCallback<LoginResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-			}
+    private void doLogin(String username, String password) {
+        dispatcher.execute(new LoginAction(username, password), new AsyncCallback<LoginResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+            }
 
-			@Override
-			public void onSuccess(LoginResult result) {
-			}
-		});
-	}
+            @Override
+            public void onSuccess(LoginResult result) {
+                PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
+                placeManager.revealPlace(request);
+            }
+        });
+    }
 }
