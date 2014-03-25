@@ -2,6 +2,8 @@ package com.bertazoli.charity.client.place;
 
 public class NameTokens {
 
+    public static final String signup = "signup";
+
     public static final String userSettings = "userSettings";
 
     public static final String login = "login";
@@ -18,6 +20,10 @@ public class NameTokens {
 
     public static String getUserSettings() {
         return userSettings;
+    }
+
+    public static String getSignup() {
+        return signup;
     }
 
 }
