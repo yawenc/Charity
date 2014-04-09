@@ -2,6 +2,7 @@ package com.bertazoli.charity.client.application.gatekeeper;
 
 import com.bertazoli.charity.client.application.events.login.LoginAuthenticatedEvent;
 import com.bertazoli.charity.client.application.events.login.LoginAuthenticatedEventHandler;
+import com.bertazoli.charity.client.application.security.SecurityManager;
 import com.bertazoli.charity.shared.beans.User;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -13,15 +14,23 @@ public class LoggedInGatekeeper implements Gatekeeper {
 
     private EventBus eventBus;
     private User currentUser;
+    private SecurityManager security;
 
     @Inject
-    public LoggedInGatekeeper(EventBus eventBus) {
+    public LoggedInGatekeeper(EventBus eventBus, final SecurityManager security) {
         this.eventBus = eventBus;
+        this.security = security;
 
         this.eventBus.addHandler(LoginAuthenticatedEvent.getType(), new LoginAuthenticatedEventHandler() {
             @Override
             public void onLogin(LoginAuthenticatedEvent event) {
-                currentUser = event.getUser();
+                if (event != null) {
+                    currentUser = event.getUser();
+                    security.setUser(currentUser);
+                } else {
+                    currentUser = null;
+                    security.setUser(null);
+                }
             }
         });
     }

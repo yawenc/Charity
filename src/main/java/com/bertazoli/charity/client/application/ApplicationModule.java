@@ -1,5 +1,6 @@
 package com.bertazoli.charity.client.application;
 
+import com.bertazoli.charity.client.application.charity.RegisterCharityModule;
 import com.bertazoli.charity.client.application.home.HomeModule;
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
 import com.bertazoli.charity.client.application.login.LoginModule;
@@ -10,6 +11,7 @@ import com.bertazoli.charity.client.application.signup.SignupModule;
 public class ApplicationModule extends AbstractPresenterModule {
     @Override
     protected void configure() {
+        install(new RegisterCharityModule());
         install(new SignupModule());
         install(new UserSettingsModule());
         install(new MainModule());
