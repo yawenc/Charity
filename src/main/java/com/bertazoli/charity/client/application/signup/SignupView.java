@@ -5,27 +5,27 @@ import java.sql.Timestamp;
 import javax.inject.Inject;
 
 import com.bertazoli.charity.shared.beans.User;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
 import com.gwtplatform.mvp.client.ViewImpl;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.HasSelectHandlers;
+import com.sencha.gxt.widget.core.client.form.DateField;
+import com.sencha.gxt.widget.core.client.form.PasswordField;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class SignupView extends ViewImpl implements SignupPresenter.MyView {
     interface Binder extends UiBinder<Widget, SignupView> {}
 
-    @UiField TextBox username;
-    @UiField TextBox firstname;
-    @UiField TextBox lastname;
-    @UiField PasswordTextBox password;
-    @UiField PasswordTextBox confirmPassword;
-    @UiField TextBox email;
-    @UiField DateBox dob;
-    @UiField Button send;
+    @UiField TextField username;
+    @UiField TextField firstname;
+    @UiField TextField lastname;
+    @UiField PasswordField password;
+    @UiField PasswordField confirmPassword;
+    @UiField TextField email;
+    @UiField DateField dob;
+    @UiField TextButton send;
 
     @Inject
     SignupView(Binder uiBinder) {
@@ -33,7 +33,7 @@ public class SignupView extends ViewImpl implements SignupPresenter.MyView {
     }
 
     @Override
-    public HasClickHandlers getSendButton() {
+    public HasSelectHandlers getSendButton() {
         return send;
     }
 

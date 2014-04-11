@@ -7,6 +7,7 @@ target/
 .project
 .settings/*
 .factorypath
+extras/
 
 # gwt caches and compiled units #
 war/gwt_bree/

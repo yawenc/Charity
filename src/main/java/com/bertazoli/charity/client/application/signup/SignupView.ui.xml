@@ -2,24 +2,29 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:d='urn:import:com.google.gwt.user.datepicker.client'
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+             xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
+             ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+             ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+             ui:generateLocales="default">
     <container:CenterLayoutContainer>
         <g:HTMLPanel>
-            <g:Label>Username:</g:Label>
-            <g:TextBox ui:field="username" />
-            <g:Label>Password:</g:Label>
-            <g:PasswordTextBox ui:field="password" />
-            <g:Label>Confirm password:</g:Label>
-            <g:PasswordTextBox ui:field="confirmPassword" />
-            <g:Label>First name:</g:Label>
-            <g:TextBox ui:field="firstname" />
-            <g:Label>Last name:</g:Label>
-            <g:TextBox ui:field="lastname" />
-            <g:Label>email:</g:Label>
-            <g:TextBox ui:field="email" />
-            <g:Label>Date of birth:</g:Label>
-            <d:DateBox ui:field="dob" />
-            <g:Button ui:field="send">Send</g:Button>
+            <ui:msg description="username">Username</ui:msg>:
+            <f:TextField ui:field="username" />
+            <ui:msg description="password">Password</ui:msg>:
+            <f:PasswordField ui:field="password" />
+            <ui:msg description="confirmPassword">Confirm password</ui:msg>:
+            <f:PasswordField ui:field="confirmPassword" />
+            <ui:msg description="firstName">First name</ui:msg>:
+            <f:TextField ui:field="firstname" />
+            <ui:msg description="lastName">Last name</ui:msg>:
+            <f:TextField ui:field="lastname" />
+            <ui:msg description="email">Email</ui:msg>:
+            <f:TextField ui:field="email" />
+            <ui:msg description="dateOfBirth">Date of birth</ui:msg>:
+            <f:DateField ui:field="dob" />
+            <b:TextButton ui:field="send"><ui:msg description="send">Send</ui:msg></b:TextButton>
         </g:HTMLPanel>
     </container:CenterLayoutContainer>
 </ui:UiBinder>

@@ -6,9 +6,6 @@ import com.bertazoli.charity.client.place.NameTokens;
 import com.bertazoli.charity.shared.action.SignupAction;
 import com.bertazoli.charity.shared.action.SignupResult;
 import com.bertazoli.charity.shared.beans.User;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
@@ -23,10 +20,13 @@ import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
 import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.HasSelectHandlers;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class SignupPresenter extends Presenter<SignupPresenter.MyView, SignupPresenter.MyProxy> {
     interface MyView extends View {
-        HasClickHandlers getSendButton();
+        HasSelectHandlers getSendButton();
         boolean validate();
         User mapBean(User user);
     }
@@ -49,9 +49,10 @@ public class SignupPresenter extends Presenter<SignupPresenter.MyView, SignupPre
 
     @Override
     protected void onBind() {
-        registerHandler(getView().getSendButton().addClickHandler(new ClickHandler() {
+        registerHandler(getView().getSendButton().addSelectHandler(new SelectHandler() {
+
             @Override
-            public void onClick(ClickEvent event) {
+            public void onSelect(SelectEvent event) {
                 if (getView().validate()) {
                     registerUser();
                 }
