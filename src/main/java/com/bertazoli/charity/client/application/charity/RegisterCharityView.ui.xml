@@ -1,12 +1,32 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:d='urn:import:com.google.gwt.user.datepicker.client'
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
-    <g:HTMLPanel>
-        <g:TextBox ui:field="charityName" />
-        <g:TextBox ui:field="registrationNumber" />
-        <g:SuggestBox ui:field="status" />
-        <d:DateBox ui:field="effectiveDateOfStatus" />
-        <g:SuggestBox ui:field="category" />
-    </g:HTMLPanel>
+             xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+             xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
+             ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+             ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+             ui:generateLocales="default">
+             
+    <ui:with type="com.sencha.gxt.data.shared.LabelProvider" field="labelProvider" />
+    <ui:with type="com.sencha.gxt.data.shared.ListStore" field="listStore" />
+    
+    <g:VerticalPanel ui:field="widget" spacing="2">
+        <f:FormPanel ui:field="mainPanel">
+        <g:HTMLPanel>
+            <ui:msg description="name">Name</ui:msg>:
+            <f:TextField ui:field="name" />
+            <ui:msg description="registrationNumber">Registration Number</ui:msg>:
+            <f:TextField ui:field="registrationNumber" />
+            <ui:msg description="status">Status</ui:msg>:
+            <ui:msg description="effectiveDateOfStatus">Effective date of status</ui:msg>:
+            <f:DateField ui:field="effectiveDateOfStatus" />
+            <ui:msg description="category">Category</ui:msg>:
+            <f:TextField ui:field="category" />
+            <b:TextButton ui:field="send"><ui:msg description="send">Send</ui:msg></b:TextButton>
+            </g:HTMLPanel>
+        </f:FormPanel>
+        <f:ComboBox ui:field="country" store="{listStore}" labelProvider="{labelProvider}" />
+    </g:VerticalPanel>
 </ui:UiBinder>

@@ -8,11 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.bertazoli.charity.shared.util.Util;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 @Entity
 @Table(name = "user")
-public class User implements IsSerializable {
+public class User implements IsSerializable, HasValidation {
 
     @Id @GeneratedValue private Long id;
     private String firstName;
@@ -94,5 +95,14 @@ public class User implements IsSerializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    @Override
+    public boolean validate() {
+        if (Util.isNullOrEmpty(getUsername()) || getUsername().length() < 30 || getUsername().length() > 40) {
+            return false;
+        }
+
+        return true;
     }
 }

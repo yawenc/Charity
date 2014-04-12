@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.bertazoli.charity.shared.beans.User;
+import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -21,9 +22,14 @@ public class UserBusinessLogic extends BaseDAO<User> {
     }
 
     @Override
-    public User create(User user) {
+    public User create(User user) throws ValidationException {
         EntityManager em = createEntityManager();
         EntityTransaction tx = em.getTransaction();
+
+        if (!user.validate()) {
+            throw new ValidationException("user.validation.error");
+        }
+
         try {
             String salt = RandomStringUtils.randomAscii(50);
             String password = Util.getEncryptedPassword(user.getPassword(), salt);

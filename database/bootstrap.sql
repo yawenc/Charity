@@ -13,11 +13,12 @@ CREATE TABLE user (
   PRIMARY KEY (id),
   UNIQUE KEY email_UNIQUE (email)
 );
---rollback drop table user
+--rollback drop table user;
 
 --changeset VitorBertazoli:charity_table (dbms:mysql failOnError:true)
 CREATE TABLE charity (
   id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(45),
   registrationNumber varchar(30) NOT NULL,
   status varchar(45),
   effectiveDateOfStatus date,
@@ -25,12 +26,13 @@ CREATE TABLE charity (
   PRIMARY KEY (id),
   UNIQUE KEY registrationNumber (registrationNumber)
 );
---rollback drop table charity
+--rollback drop table charity;
 
 --changeset VitorBertazoli:address (dbms:mysql failOnError:true)
 CREATE TABLE country (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(45) NOT NULL,
+  code varchar(4),
   PRIMARY KEY(id)
 );
 
@@ -52,7 +54,7 @@ CREATE TABLE charity_address (
   PRIMARY KEY (id),
   FOREIGN KEY (countryId) REFERENCES country(id) ON DELETE CASCADE,
   FOREIGN KEY (stateId) REFERENCES state(id) ON DELETE CASCADE
-)
+);
 --rollback drop table charity_address;
 --rollback drop table state;
 --rollback drop table country;

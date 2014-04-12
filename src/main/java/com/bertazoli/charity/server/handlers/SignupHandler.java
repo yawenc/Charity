@@ -6,6 +6,7 @@ import com.bertazoli.charity.server.businesslogic.UserBusinessLogic;
 import com.bertazoli.charity.shared.action.SignupAction;
 import com.bertazoli.charity.shared.action.SignupResult;
 import com.bertazoli.charity.shared.beans.User;
+import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
@@ -20,7 +21,12 @@ public class SignupHandler implements ActionHandler<SignupAction, SignupResult> 
 	@Override
     public SignupResult execute(SignupAction action, ExecutionContext context) throws ActionException {
         SignupResult result = null;
-        User user = userBusinessLogic.create(action.getUserIn());
+        User user;
+        try {
+            user = userBusinessLogic.create(action.getUserIn());
+        } catch (ValidationException e) {
+            throw new ActionException(e.getMessage());
+        }
         if (user != null) {
             result = new SignupResult(user);
         }
