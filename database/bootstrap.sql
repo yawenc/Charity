@@ -10,9 +10,21 @@ CREATE TABLE user (
   password varchar(100),
   salt varchar(50),
   dob date,
+  activated boolean,
+  activatedOn date,
+  active boolean,
   PRIMARY KEY (id),
   UNIQUE KEY email_UNIQUE (email)
 );
+
+CREATE TABLE user_token (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  userId int(11) NOT NULL,
+  token varchar(100) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE
+);
+--rollback drop table user_token;
 --rollback drop table user;
 
 --changeset VitorBertazoli:charity_table (dbms:mysql failOnError:true)

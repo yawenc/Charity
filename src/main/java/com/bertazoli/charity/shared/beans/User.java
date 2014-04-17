@@ -23,6 +23,10 @@ public class User implements IsSerializable, HasValidation {
     private Timestamp dob;
     private String salt;
     private String password;
+    private boolean activated;
+    private Timestamp activatedOn;
+    private boolean active;
+    
     @Transient private boolean isLoggedIn;
 
     public Timestamp getDob() {
@@ -97,9 +101,33 @@ public class User implements IsSerializable, HasValidation {
         this.salt = salt;
     }
 
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public Timestamp getActivatedOn() {
+        return activatedOn;
+    }
+
+    public void setActivatedOn(Timestamp activatedOn) {
+        this.activatedOn = activatedOn;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean validate() {
-        if (Util.isNullOrEmpty(getUsername()) || getUsername().length() < 30 || getUsername().length() > 40) {
+        if (Util.isNullOrEmpty(getUsername()) || getUsername().length() < 5 || getUsername().length() > 40) {
             return false;
         }
 
