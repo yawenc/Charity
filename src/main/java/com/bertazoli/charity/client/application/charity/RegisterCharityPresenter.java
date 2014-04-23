@@ -15,6 +15,7 @@ public class RegisterCharityPresenter extends Presenter<RegisterCharityPresenter
 
     @NameToken(NameTokens.registerCharity)
     @ProxyStandard
+//    @UseGatekeeper(LoggedInGatekeeper.class)
     public interface MyProxy extends ProxyPlace<RegisterCharityPresenter> {}
 
     @Inject
@@ -25,5 +26,4 @@ public class RegisterCharityPresenter extends Presenter<RegisterCharityPresenter
     protected void onBind() {
         super.onBind();
     }
-
 }

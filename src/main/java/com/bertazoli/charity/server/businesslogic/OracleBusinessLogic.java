@@ -3,35 +3,42 @@ package com.bertazoli.charity.server.businesslogic;
 import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
-import com.bertazoli.charity.shared.beans.oracle.Country;
-import com.bertazoli.charity.shared.beans.oracle.OracleListLoadResult;
+import com.bertazoli.charity.client.application.oracle.IsOracleData;
+import com.bertazoli.charity.server.oracle.DataTypeConfig;
+import com.bertazoli.charity.server.oracle.definition.OracleDefinition;
 import com.bertazoli.charity.shared.beans.oracle.OracleListLoadResultBean;
-import com.bertazoli.charity.shared.beans.oracle.OracleLoadConfig;
+import com.bertazoli.charity.shared.beans.oracle.OracleLoadConfigBean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class OracleBusinessLogic {
 
+    @Inject DataTypeConfig dataTypeConfig;
+    
     @Inject
     public OracleBusinessLogic() {
     }
 
-    public OracleListLoadResult search(OracleLoadConfig load) {
+    public OracleListLoadResultBean search(OracleLoadConfigBean load) {
         EntityManager em = BaseDAO.createEntityManager();
         try {
-            TypedQuery<Country> query = em.createQuery("SELECT a FROM Country a WHERE UPPER(name) LIKE ? OR UPPER(code) = ?", Country.class);
-            query.setParameter(1, "%" + load.getQuery().toUpperCase() + "%");
-            query.setParameter(2, load.getQuery().toUpperCase());
-            ArrayList<Country> items = (ArrayList<Country>) query.getResultList();
+            OracleDefinition definition = dataTypeConfig.getDefinition(load.getType());
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT ");
+            sb.append(definition.getSelect());
+            sb.append(" FROM ");
+            sb.append(definition.getTable());
+            sb.append(" " + definition.getWhere(load.getQuery() + " "));
+            
+            Query query = em.createQuery(sb.toString());
+            ArrayList<IsOracleData> items = (ArrayList<IsOracleData>) query.getResultList();
 
             if (items != null) {
-                // ListLoadResultBean<Country> data = new
-                // ListLoadResultBean<Country>(items);
-
-                OracleListLoadResult data = new OracleListLoadResultBean();
+                OracleListLoadResultBean data = new OracleListLoadResultBean();
                 data.setData(items);
 
                 return data;

@@ -1,4 +1,4 @@
-package com.bertazoli.charity.shared.beans.oracle;
+package com.bertazoli.charity.shared.beans;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

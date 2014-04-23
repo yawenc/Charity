@@ -8,9 +8,6 @@
              ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
              ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
              ui:generateLocales="default">
-             
-    <ui:with type="com.sencha.gxt.data.shared.LabelProvider" field="labelProvider" />
-    <ui:with type="com.sencha.gxt.data.shared.ListStore" field="listStore" />
     
     <g:VerticalPanel ui:field="widget" spacing="2">
         <f:FormPanel ui:field="mainPanel">
@@ -27,6 +24,6 @@
             <b:TextButton ui:field="send"><ui:msg description="send">Send</ui:msg></b:TextButton>
             </g:HTMLPanel>
         </f:FormPanel>
-        <f:ComboBox ui:field="country" store="{listStore}" labelProvider="{labelProvider}" />
+        <g:SimplePanel ui:field="comboPanel" />
     </g:VerticalPanel>
 </ui:UiBinder>

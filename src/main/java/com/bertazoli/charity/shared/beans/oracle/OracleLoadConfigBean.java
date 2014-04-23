@@ -2,15 +2,26 @@ package com.bertazoli.charity.shared.beans.oracle;
 
 import java.util.List;
 
+import com.bertazoli.charity.shared.oracle.DataType;
+import com.google.inject.Inject;
 import com.sencha.gxt.data.shared.SortInfo;
 
-public class OracleLoadConfigBean implements OracleLoadConfig {
-
+public abstract class OracleLoadConfigBean implements OracleLoadConfig {
+    
+    @Inject
+    public OracleLoadConfigBean(DataType type) {
+        this.type = type;
+    }
+    private DataType type;
     private static final long serialVersionUID = 2642152018515577197L;
     private int limit;
     private List<? extends SortInfo> info;
     private String query;
     private int offset;
+    
+    public DataType getType() {
+        return type;
+    }
 
     @Override
     public void setLimit(int limit) {
@@ -51,5 +62,4 @@ public class OracleLoadConfigBean implements OracleLoadConfig {
     public void setOffset(int offset) {
         this.offset = offset;
     }
-
 }
