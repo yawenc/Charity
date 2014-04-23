@@ -20,14 +20,14 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
     @Inject private UserBusinessLogic userBusinessLogic;
 	
 	@Override
-	public LoginResult execute(LoginAction action, ExecutionContext context)	throws ActionException {
+	public LoginResult execute(LoginAction action, ExecutionContext context) throws ActionException {
 		LoginResult result = null;
 		
         User user = userBusinessLogic.validateUser(action.getUsername(), action.getPassword());
         if (user != null) {
             result = new LoginResult(requestProvider.get().getSession().getId(), user);
         } else {
-            throw new ActionException("Invalid User name or Password.");
+            throw new ActionException("user.validate.invalid");
         }
 
 		return result;

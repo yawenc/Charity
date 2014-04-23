@@ -14,7 +14,7 @@ CREATE TABLE user (
   activatedOn date,
   active boolean,
   PRIMARY KEY (id),
-  UNIQUE KEY email_UNIQUE (email)
+  UNIQUE KEY UNIQUE_USER (username, email)
 );
 
 CREATE TABLE user_token (

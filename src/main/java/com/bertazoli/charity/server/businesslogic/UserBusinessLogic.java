@@ -3,9 +3,11 @@ package com.bertazoli.charity.server.businesslogic;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -16,6 +18,7 @@ import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 @Singleton
 public class UserBusinessLogic extends BaseDAO<User> {
@@ -26,7 +29,7 @@ public class UserBusinessLogic extends BaseDAO<User> {
     }
 
     @Override
-    public User create(User user) throws ValidationException {
+    public User create(User user) throws ValidationException, ActionException {
         EntityManager em = createEntityManager();
         EntityTransaction tx = em.getTransaction();
 
@@ -54,9 +57,10 @@ public class UserBusinessLogic extends BaseDAO<User> {
             user.setPassword(null);
             user.setSalt(null);
             user.setLoggedIn(false);
-        } catch (EntityExistsException e) {
-            tx.rollback();
+        } catch (PersistenceException e) {
+            throw new ActionException("user.create.alreadyexists");
         } finally {
+            tx.rollback();
             em.close();
         }
         return user;
@@ -101,7 +105,7 @@ public class UserBusinessLogic extends BaseDAO<User> {
             query.setParameter(1, username);
             User user = query.setMaxResults(1).getSingleResult();
             if (user != null) {
-                if (user.getPassword().equals(Util.getEncryptedPassword(password, user.getSalt()))) {
+                if (user.getPassword().equals(Util.getEncryptedPassword(password, user.getSalt())) && user.isActive() && user.isActivated()) {
                     user.setLoggedIn(true);
                     user.setPassword(null);
                     user.setSalt(null);
@@ -129,6 +133,7 @@ public class UserBusinessLogic extends BaseDAO<User> {
                 user = retrieve(user);
                 if (user != null && !user.isActivated()) {
                     user.setActivated(true);
+                    user.setActive(true);
                     user.setActivatedOn(new Timestamp(new Date().getTime()));
                     update(user);    
                 }
@@ -136,6 +141,29 @@ public class UserBusinessLogic extends BaseDAO<User> {
             } else {
                 return false;
             }
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Search if the given username exists
+     * @param username
+     * @return true if username is found, false otherwise
+     */
+    public Boolean searchUsername(String username) {
+        EntityManager em = createEntityManager();
+        try {
+            Query query = em.createQuery("SELECT a.username FROM User a WHERE username = :username");
+            query.setParameter("username", username);
+            String result = (String) query.getSingleResult();
+            if (result != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoResultException e ) {
+            return false;
         } finally {
             em.close();
         }

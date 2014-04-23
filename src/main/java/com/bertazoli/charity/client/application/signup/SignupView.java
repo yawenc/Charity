@@ -5,9 +5,14 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import com.bertazoli.charity.client.i18n.GlobalDictionary;
 import com.bertazoli.charity.shared.beans.User;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -33,6 +38,8 @@ public class SignupView extends ViewImpl implements SignupPresenter.MyView {
     @UiField TextField email;
     @UiField DateField dob;
     @UiField TextButton send;
+    
+    @Inject GlobalDictionary dictionary;
 
     @Inject
     SignupView(Binder uiBinder) {
@@ -58,6 +65,22 @@ public class SignupView extends ViewImpl implements SignupPresenter.MyView {
         email.addValidator(new RegExValidator("^[a-z0-9]+@[a-z0-9].[a-z0-9]+", "aa"));
         dob.setAllowBlank(false);
         dob.addValidator(new MaxDateValidator(new Date()));
+        
+        confirmPassword.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                validatePassword();
+            }
+        });
+    }
+    
+    private void validatePassword() {
+        if (!password.getText().equals(confirmPassword.getText())) {
+            confirmPassword.forceInvalid(dictionary.passwordDoesNotMatch());
+            confirmPassword.focus();
+        } else {
+            confirmPassword.clearInvalid();
+        }
     }
 
     @Override
@@ -67,6 +90,7 @@ public class SignupView extends ViewImpl implements SignupPresenter.MyView {
 
     @Override
     public boolean validate() {
+        validatePassword();
         return mainPanel.isValid();
     }
 
@@ -79,5 +103,25 @@ public class SignupView extends ViewImpl implements SignupPresenter.MyView {
         user.setFirstName(firstname.getText());
         user.setLastName(lastname.getText());
         return user;
+    }
+
+    @Override
+    public HasKeyUpHandlers getUsernameHandler() {
+        return username;
+    }
+
+    @Override
+    public HasText getUsername() {
+        return username;
+    }
+
+    @Override
+    public void addUsernameValidationError(Boolean exists) {
+        if (exists) {
+            username.forceInvalid(dictionary.usernameAlreadyExists());
+        } else {
+            username.clearInvalid();
+            username.validate();
+        }
     }
 }
