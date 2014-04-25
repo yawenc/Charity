@@ -4,6 +4,7 @@ import com.bertazoli.charity.shared.action.OracleAction;
 import com.bertazoli.charity.shared.action.OracleResult;
 import com.bertazoli.charity.shared.beans.oracle.OracleListLoadResultBean;
 import com.bertazoli.charity.shared.beans.oracle.OracleLoadConfigBean;
+import com.bertazoli.charity.shared.beans.oracle.filter.ConfigFilter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -24,10 +25,12 @@ public class ComboBoxWithOracle<U extends OracleLoadConfigBean> {
     private ComboBox<IsOracleData> combobox;
     private ListStore<IsOracleData> listStore = new ListStore<IsOracleData>(properties.id());
     private LabelProvider<IsOracleData> labelProvider = properties.description();
+    private U config;
     
     @Inject
     public ComboBoxWithOracle(final DispatchAsync dispatcher, Provider<U> configProvider) {
         this.combobox = new ComboBox<IsOracleData>(listStore, labelProvider);
+        this.config = configProvider.get();
         
         DataProxy<U, OracleListLoadResultBean> dataProxy = new RpcProxy<U, OracleListLoadResultBean>() {;
 
@@ -48,7 +51,7 @@ public class ComboBoxWithOracle<U extends OracleLoadConfigBean> {
         };
 
         PagingLoader<U, OracleListLoadResultBean> loader = new PagingLoader<U, OracleListLoadResultBean>(dataProxy);
-        loader.useLoadConfig(configProvider.get());
+        loader.useLoadConfig(config);
         loader.addBeforeLoadHandler(new BeforeLoadHandler<U>() {
             @Override
             public void onBeforeLoad(BeforeLoadEvent<U> event) {
@@ -67,5 +70,9 @@ public class ComboBoxWithOracle<U extends OracleLoadConfigBean> {
     
     public ComboBox<IsOracleData> getComboBox() {
         return combobox;
+    }
+
+    public void filter(ConfigFilter filter) {
+        config.setFilter(filter);
     }
 }

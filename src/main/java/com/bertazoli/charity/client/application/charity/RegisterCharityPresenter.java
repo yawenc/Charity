@@ -1,5 +1,6 @@
 package com.bertazoli.charity.client.application.charity;
 
+import com.bertazoli.charity.client.application.gatekeeper.LoggedInGatekeeper;
 import com.bertazoli.charity.client.application.main.MainPresenter;
 import com.bertazoli.charity.client.place.NameTokens;
 import com.google.inject.Inject;
@@ -8,6 +9,7 @@ import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 
 public class RegisterCharityPresenter extends Presenter<RegisterCharityPresenter.MyView, RegisterCharityPresenter.MyProxy> {
@@ -15,7 +17,7 @@ public class RegisterCharityPresenter extends Presenter<RegisterCharityPresenter
 
     @NameToken(NameTokens.registerCharity)
     @ProxyStandard
-//    @UseGatekeeper(LoggedInGatekeeper.class)
+    @UseGatekeeper(LoggedInGatekeeper.class)
     public interface MyProxy extends ProxyPlace<RegisterCharityPresenter> {}
 
     @Inject

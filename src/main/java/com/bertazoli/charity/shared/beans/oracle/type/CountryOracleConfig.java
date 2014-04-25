@@ -6,7 +6,6 @@ import com.bertazoli.charity.shared.oracle.DataType;
 import com.google.inject.Inject;
 
 public class CountryOracleConfig extends OracleLoadConfigBean {
-    private String[] params;
 
     @Inject
     public CountryOracleConfig() {

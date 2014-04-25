@@ -2,6 +2,7 @@ package com.bertazoli.charity.shared.beans.oracle;
 
 import java.util.List;
 
+import com.bertazoli.charity.shared.beans.oracle.filter.ConfigFilter;
 import com.bertazoli.charity.shared.oracle.DataType;
 import com.google.inject.Inject;
 import com.sencha.gxt.data.shared.SortInfo;
@@ -18,6 +19,7 @@ public abstract class OracleLoadConfigBean implements OracleLoadConfig {
     private List<? extends SortInfo> info;
     private String query;
     private int offset;
+    private ConfigFilter filter;
     
     public DataType getType() {
         return type;
@@ -61,5 +63,13 @@ public abstract class OracleLoadConfigBean implements OracleLoadConfig {
     @Override
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    public ConfigFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(ConfigFilter filter) {
+        this.filter = filter;
     }
 }

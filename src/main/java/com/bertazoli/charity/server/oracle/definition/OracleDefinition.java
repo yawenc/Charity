@@ -1,7 +1,14 @@
 package com.bertazoli.charity.server.oracle.definition;
 
-public interface OracleDefinition {
-    String getSelect();
-    String getTable();
-    String getWhere(String params);
+import com.bertazoli.charity.shared.beans.oracle.filter.ConfigFilter;
+
+public abstract class OracleDefinition {
+    protected ConfigFilter filter;
+    
+    public abstract String getSelect();
+    public abstract String getTable();
+    public abstract String getWhere(String params);
+    public void setFilter(ConfigFilter filter) {
+        this.filter = filter;
+    }
 }

@@ -26,6 +26,7 @@ public class OracleBusinessLogic {
         EntityManager em = BaseDAO.createEntityManager();
         try {
             OracleDefinition definition = dataTypeConfig.getDefinition(load.getType());
+            definition.setFilter(load.getFilter());
             
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT ");

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.bertazoli.charity.server.oracle.definition.CountryOracleDefinition;
 import com.bertazoli.charity.server.oracle.definition.OracleDefinition;
+import com.bertazoli.charity.server.oracle.definition.StateOracleDefinition;
 import com.bertazoli.charity.shared.oracle.DataType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -15,6 +16,7 @@ public class DataTypeConfig {
     @Inject
     public DataTypeConfig() {
         map.put(DataType.COUNTRY, new CountryOracleDefinition());
+        map.put(DataType.STATE, new StateOracleDefinition());
     }
     
     public OracleDefinition getDefinition(DataType type) {
