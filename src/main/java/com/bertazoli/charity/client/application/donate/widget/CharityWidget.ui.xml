@@ -3,17 +3,16 @@
              xmlns:d='urn:import:com.google.gwt.user.datepicker.client'
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:client="urn:import:com.sencha.gxt.widget.core.client"
              xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
              xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
              ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
              ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
              ui:generateLocales="default">
-    <container:CenterLayoutContainer>
-        <g:HTMLPanel>
-            <ui:msg description="anEmailHasBeenSentToYouPleaseCheckYourEmailsToFinishTheRegistrationProcess">
-                An E-Mail has been sent to you, please check your emails to finish the registration process
-            </ui:msg>
-            <b:TextButton ui:field="backButton"><ui:msg>Go back</ui:msg></b:TextButton>
-        </g:HTMLPanel>
-    </container:CenterLayoutContainer>
+    
+    <g:HTMLPanel>
+        <g:Label ui:field="name" />
+        <g:Label ui:field="registrationNumber" />
+        <g:Label ui:field="category" />
+    </g:HTMLPanel>
 </ui:UiBinder>

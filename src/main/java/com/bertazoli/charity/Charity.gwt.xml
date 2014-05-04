@@ -20,6 +20,7 @@
     <!-- GWTP -->
     <inherits name='com.gwtplatform.dispatch.Dispatch' />
     <inherits name='com.gwtplatform.mvp.MvpWithEntryPoint' />
+    <set-configuration-property name="gwtp.bootstrapper" value="com.bertazoli.charity.client.gin.BootstraperImpl"/> 
 
     <source path='client' />
     <source path='shared' />

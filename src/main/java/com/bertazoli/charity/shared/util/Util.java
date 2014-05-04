@@ -2,8 +2,11 @@ package com.bertazoli.charity.shared.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.bertazoli.charity.shared.Constants;
+import com.bertazoli.charity.shared.beans.Charity;
 
 public class Util {
     public static boolean isNullOrEmpty(String string) {
@@ -24,5 +27,9 @@ public class Util {
             sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
+    }
+
+    public static boolean isEmpty(Collection<?> list) {
+        return list == null || list.isEmpty();
     }
 }

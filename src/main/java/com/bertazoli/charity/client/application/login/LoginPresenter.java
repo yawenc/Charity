@@ -5,10 +5,6 @@ import com.bertazoli.charity.client.application.events.login.LoginAuthenticatedE
 import com.bertazoli.charity.client.place.NameTokens;
 import com.bertazoli.charity.shared.action.LoginAction;
 import com.bertazoli.charity.shared.action.LoginResult;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
@@ -20,14 +16,18 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.HasSelectHandlers;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 @NoGatekeeper
 public class LoginPresenter extends Presenter<LoginPresenter.MyView, LoginPresenter.MyProxy> {
     interface MyView extends View {
-        HasClickHandlers getSubmitButton();
+        HasSelectHandlers getSubmitButton();
         boolean validate();
         String getPassword();
         String getUsername();
+        void setFocusToUsername();
     }
     
     @Inject PlaceManager placeManager;
@@ -47,45 +47,32 @@ public class LoginPresenter extends Presenter<LoginPresenter.MyView, LoginPresen
     @Override
     protected void onBind() {
         super.onBind();
-
-        getView().getSubmitButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if (getView().validate()) {
-                    doLogin(getView().getUsername(), getView().getPassword());
-                }
-            }
-        });
-    }
-
-    private void doLogin(String username, String password) {
-        dispatcher.execute(new LoginAction(username, password), new CustomAsyncCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult result) {
-                if (result != null) {
-                    getEventBus().fireEvent(new LoginAuthenticatedEvent(result.getUser()));
-                    PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
-                    placeManager.revealPlace(request);
-                }
-            }
-        });
         
-        /*
-        dispatcher.execute(new LoginAction(username, password), new AsyncCallback<LoginResult>() {
+        registerHandler(getView().getSubmitButton().addSelectHandler(new SelectHandler() {
             @Override
-            public void onFailure(Throwable caught) {
-                System.out.println("here");
+            public void onSelect(SelectEvent event) {
+                if (getView().validate()) {
+                    doLogin();
+                }
             }
-
+        }));
+    }
+    
+    @Override
+    public void prepareFromRequest(PlaceRequest request) {
+        getView().setFocusToUsername();
+    }
+    
+    private void doLogin() {
+        dispatcher.execute(new LoginAction(getView().getUsername(), getView().getPassword()), new CustomAsyncCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult result) {
                 if (result != null) {
-                    getEventBus().fireEvent(new LoginAuthenticatedEvent(result.getUser()));
+                    getEventBus().fireEvent(new LoginAuthenticatedEvent(result.getSessionKey(), result.getUser()));
                     PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
                     placeManager.revealPlace(request);
                 }
             }
         });
-        */
     }
 }

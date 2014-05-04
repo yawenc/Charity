@@ -16,5 +16,8 @@ public interface GlobalDictionary extends Messages {
     @DefaultMessage("Password does not match")
     String passwordDoesNotMatch();
 
+    @DefaultMessage("###,##0.00")
+    String currencyFormat();
+
     
 }

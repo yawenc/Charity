@@ -9,6 +9,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -17,11 +19,13 @@ import com.bertazoli.charity.shared.beans.UserToken;
 import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 @Singleton
 public class UserBusinessLogic extends BaseDAO<User> {
+    @Inject Provider<HttpServletRequest> requestProvider;
 
     @Inject
     public UserBusinessLogic() {
@@ -43,6 +47,7 @@ public class UserBusinessLogic extends BaseDAO<User> {
             user.setPassword(password);
             user.setSalt(salt);
             user.setActivated(false);
+            user.setCreatedOn(new Timestamp(new Date().getTime()));
             tx.begin();
             em.persist(user);
             tx.commit();
@@ -58,9 +63,9 @@ public class UserBusinessLogic extends BaseDAO<User> {
             user.setSalt(null);
             user.setLoggedIn(false);
         } catch (PersistenceException e) {
+            tx.rollback();
             throw new ActionException("user.create.alreadyexists");
         } finally {
-            tx.rollback();
             em.close();
         }
         return user;
@@ -167,5 +172,21 @@ public class UserBusinessLogic extends BaseDAO<User> {
         } finally {
             em.close();
         }
+    }
+
+    public User fetchFromSession(String sessionID) {
+        HttpServletRequest request = requestProvider.get();
+        HttpSession session = request.getSession();
+        if (session.getId().equals(sessionID)) {
+            Long userID = (Long) session.getAttribute("user.id");
+            User user = new User();
+            user.setId(userID);
+            user = retrieve(user);
+            user.setLoggedIn(true);
+            user.setPassword(null);
+            user.setSalt(null);
+            return user;
+        }
+        return null;
     }
 }

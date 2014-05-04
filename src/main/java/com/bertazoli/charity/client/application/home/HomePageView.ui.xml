@@ -7,6 +7,15 @@
         <g:Hyperlink ui:field="logout" targetHistoryToken="logout">Logout</g:Hyperlink>
         <g:Hyperlink targetHistoryToken="{nameTokens.getUserSettings}">User Settings</g:Hyperlink>
         <g:Hyperlink targetHistoryToken="{nameTokens.getRegisterCharity}">Register Charity</g:Hyperlink>
-        <g:HTMLPanel ui:field="main" />
+        <g:HTMLPanel>
+            <ui:msg description="charitiesThatHaveNeverReceivedADonationFromThisWebsite">
+                Charities that have never received a donation from this website.
+            </ui:msg>
+            <ui:msg description="selectOneBelowToHelpThemOut">
+                Select one below to help them out!!!
+            </ui:msg>
+            <container:FlowLayoutContainer ui:field="charityList">
+            </container:FlowLayoutContainer>
+        </g:HTMLPanel>
     </g:HTMLPanel>
 </ui:UiBinder>

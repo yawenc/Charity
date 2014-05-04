@@ -16,6 +16,7 @@ public class UserCreatedView extends ViewImpl implements UserCreatedPresenter.My
 
     @Inject
     UserCreatedView(Binder uiBinder) {
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override

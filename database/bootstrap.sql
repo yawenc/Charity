@@ -11,7 +11,8 @@ CREATE TABLE user (
   salt varchar(50),
   dob date,
   activated boolean,
-  activatedOn date,
+  createdOn timestamp,
+  activatedOn timestamp,
   active boolean,
   PRIMARY KEY (id),
   UNIQUE KEY UNIQUE_USER (username, email)
@@ -92,3 +93,12 @@ CREATE TABLE charity_address (
 --rollback drop table charity_address;
 --rollback drop table state;
 --rollback drop table country;
+
+--changeset VitorBertazoli:insertFirstUser (dbms:mysql failOnError:true)
+INSERT INTO user (firstname, lastname, username, email, password, salt, dob, activated, createdOn, activatedOn, active) VALUES
+('Vitor','Bertazoli','vitor','vitor@bertazoli.com','f760d8462d5bf549ca5fa042a4f8c92ef8e6cdefb07299b8c6e0b856eec9fa3e','!,B@!ij,!}Rg=Sn/oyzO  <DI:Mkdfr_u7b_E:r:ZTG_/fWJ!v','1982-03-10',TRUE,'2014-04-25 13:18:10','2014-04-25 13:20:44',TRUE);
+INSERT INTO user_token (userId, token) VALUES
+(1, 'dAfp7PXzIxTVbwjgKH2z8GBZCJZHS2XKhcuTHUhxORIom1ccHbhl0FzvzMTO4lPADsWi7KPpIqVVFju7CdkYrjjF5r3ynwBqRNkw');
+
+--rollback DELETE FROM user;
+--rollback DELETE FROM user_token;

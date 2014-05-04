@@ -24,6 +24,7 @@ public class User implements IsSerializable, HasValidation {
     private String salt;
     private String password;
     private boolean activated;
+    private Timestamp createdOn;
     private Timestamp activatedOn;
     private boolean active;
     
@@ -132,5 +133,13 @@ public class User implements IsSerializable, HasValidation {
         }
 
         return true;
+    }
+
+    public Timestamp getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Timestamp createdOn) {
+        this.createdOn = createdOn;
     }
 }

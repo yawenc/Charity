@@ -105,8 +105,8 @@ public class SignupPresenter extends Presenter<SignupPresenter.MyView, SignupPre
             @Override
             public void onSuccess(SignupResult result) {
                 if (result != null) {
-                    PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.home).build();
-                    placeManager.revealPlace(request);
+                    PlaceRequest request = new PlaceRequest.Builder().nameToken(NameTokens.userCreated).build();
+                    placeManager.revealPlace(request, true);
                 }
             }
         });

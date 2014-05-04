@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:d='urn:import:com.google.gwt.user.datepicker.client'
+             xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:client="urn:import:com.sencha.gxt.widget.core.client"
+             xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+             xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
+             ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+             ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+             ui:generateLocales="default">
+    
+    <f:FormPanel ui:field="mainPanel">
+        <g:HTMLPanel>
+            <g:HTMLPanel ui:field="charityPanel" />
+            <ui:msg description="selectTheAmountYouWantToDonate">
+                Select the amount you want to donate
+            </ui:msg>
+            <f:FieldLabel>
+                <ui:msg description="amountToDonate">Amount to donate</ui:msg>
+                <f:widget>
+                    <g:SimplePanel ui:field="amountToDonatePanel" />
+                </f:widget>
+            </f:FieldLabel>
+            <ui:msg description="selectThePercentageYouWantToKeepFromThePrize">
+                Select the percentage you want to keep from the prize
+            </ui:msg>
+            <f:FieldLabel>
+                <ui:msg description="percentageToKeep">Percentage to keep</ui:msg>
+                <f:widget>
+                    <client:Slider ui:field="amountToKeep" />
+                </f:widget>
+            </f:FieldLabel>
+            <g:SimplePanel ui:field="amountToKeepTextPanel" />
+            <b:TextButton ui:field="submit"><ui:msg description="submit">Submit</ui:msg></b:TextButton>
+        </g:HTMLPanel>
+    </f:FormPanel>
+</ui:UiBinder>

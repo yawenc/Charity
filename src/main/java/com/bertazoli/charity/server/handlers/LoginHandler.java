@@ -2,6 +2,7 @@ package com.bertazoli.charity.server.handlers;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.bertazoli.charity.server.businesslogic.UserBusinessLogic;
 import com.bertazoli.charity.shared.action.LoginAction;
@@ -25,7 +26,10 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 		
         User user = userBusinessLogic.validateUser(action.getUsername(), action.getPassword());
         if (user != null) {
-            result = new LoginResult(requestProvider.get().getSession().getId(), user);
+            HttpSession session = requestProvider.get().getSession();
+            session.setAttribute("login.authenticated", user.getUsername());
+            session.setAttribute("user.id", user.getId());
+            result = new LoginResult(session.getId(), user);
         } else {
             throw new ActionException("user.validate.invalid");
         }

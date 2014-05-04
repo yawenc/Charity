@@ -5,11 +5,13 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class LoginAuthenticatedEvent extends GwtEvent<LoginAuthenticatedEventHandler> {
     private User user;
+    private String sessionID;
 
     private static final Type<LoginAuthenticatedEventHandler> TYPE = new Type<LoginAuthenticatedEventHandler>();
 
-    public LoginAuthenticatedEvent(User user) {
+    public LoginAuthenticatedEvent(String sessionID, User user) {
         this.user = user;
+        this.setSessionID(sessionID);
     }
 
     @Override
@@ -32,5 +34,13 @@ public class LoginAuthenticatedEvent extends GwtEvent<LoginAuthenticatedEventHan
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getSessionID() {
+        return sessionID;
+    }
+
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
     }
 }
