@@ -205,11 +205,12 @@ class Property(object):
     def setDeprecated(self):
         '''
         Ensures that this property is marked as deprecated, by including an appropriate comment.
-        '''
+        
         if not self.isDeprecated():
             self._comments += deprecatedComment
         global deprecatedCommentIssued 
         deprecatedCommentIssued = True
+        '''
         
     def unsetDeprecated(self):
         '''
@@ -446,7 +447,7 @@ def mergeLocales( extrasDir, resourcesDir ):
     incomingProperties = PropertyCollection()
     for filename in extraFiles:
         locale = findLocale( filename )
-        if locale != '':
+        if locale != '' and locale != 'default':
             print( "Skipping non-default locale in extra directory: " + filename )
             continue
         pathname = os.path.join( extrasDir, filename )

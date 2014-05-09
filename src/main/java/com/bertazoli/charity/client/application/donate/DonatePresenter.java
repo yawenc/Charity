@@ -11,7 +11,7 @@ import com.bertazoli.charity.shared.action.CharitySearchResult;
 import com.bertazoli.charity.shared.action.donate.SetExpressChecktoutAction;
 import com.bertazoli.charity.shared.action.donate.SetExpressChecktoutResult;
 import com.bertazoli.charity.shared.beans.Charity;
-import com.bertazoli.charity.shared.beans.Donation;
+import com.bertazoli.charity.shared.beans.DonationInformation;
 import com.bertazoli.charity.shared.searchparams.CharitySearchParams;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -40,7 +40,7 @@ public class DonatePresenter extends CustomPresenter<DonatePresenter.MyView, Don
         void setBean(Charity bean);
         HasSelectHandlers getSubmit();
         boolean validate();
-        Donation mapBean(Donation bean);
+        DonationInformation mapBean(DonationInformation bean);
     }
 
     @NameToken(NameTokens.donate)
@@ -81,7 +81,7 @@ public class DonatePresenter extends CustomPresenter<DonatePresenter.MyView, Don
     }
     
     private void donate() {
-        Donation bean = getView().mapBean(new Donation());
+        DonationInformation bean = getView().mapBean(new DonationInformation());
         dispatcher.execute(new SetExpressChecktoutAction(bean), new AsyncCallback<SetExpressChecktoutResult>() {
             @Override
             public void onFailure(Throwable caught) {

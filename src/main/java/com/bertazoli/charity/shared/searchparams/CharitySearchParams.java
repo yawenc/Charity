@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CharitySearchParams implements IsSerializable {
     private int limit;
     private Long charityId;
+    private String text;
 
     public int getLimit() {
         return limit;
@@ -17,5 +18,11 @@ public class CharitySearchParams implements IsSerializable {
     }
     public void setCharityId(Long charityId) {
         this.charityId = charityId;
+    }
+    public String getText() {
+        return text;
+    }
+    public void setText(String text) {
+        this.text = text;
     }
 }

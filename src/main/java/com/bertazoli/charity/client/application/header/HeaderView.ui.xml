@@ -1,0 +1,23 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'
+    xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
+    xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+    xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+    <ui:style>
+        .header {
+    		position: absolute;
+			top: 0px;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.header}">
+        <container:HorizontalLayoutContainer>
+            <g:Label ui:field="totalDonated" />   
+            <!--
+            <f:TextField ui:field="username" />
+            <f:PasswordField ui:field="password" />
+            <b:TextButton ui:field="submit"><ui:msg description="submit">Submit</ui:msg></b:TextButton>
+            <b:TextButton ui:field="signUp"><ui:msg description="signUp">Sign ip</ui:msg></b:TextButton>
+            -->
+        </container:HorizontalLayoutContainer>
+    </g:HTMLPanel>
+</ui:UiBinder>

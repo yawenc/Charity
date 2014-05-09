@@ -17,7 +17,12 @@ import com.bertazoli.charity.shared.util.Util;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.web.bindery.event.shared.EventBus;
@@ -38,6 +43,8 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         void switchView(boolean loggedIn);
         HasClickHandlers getLogoutButton();
         void clear();
+        HasKeyPressHandlers getCharitySearch();
+        HasText getCharitySearchText();
     }
     
     @ContentSlot public static final Type<RevealContentHandler<?>> TYPE_SetCharityItem = new Type<RevealContentHandler<?>>();
@@ -46,17 +53,26 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
     @Inject private DispatchAsync dispatcher;
     @Inject private PlaceManager placeManager;
     @Inject private Provider<CharityItemPresenter> charityItemProvider;
+    private Timer timer;
+    private boolean running;
 
     @ProxyStandard
     @NameToken(NameTokens.home)
     @UseGatekeeper(LoggedInGatekeeper.class)
-    public interface MyProxy extends ProxyPlace<HomePagePresenter> {
-    }
+    public interface MyProxy extends ProxyPlace<HomePagePresenter> {}
 
     @Inject
     public HomePagePresenter(EventBus eventBus, MyView view, MyProxy proxy, SecurityManager security) {
         super(eventBus, view, proxy, ApplicationPresenter.TYPE_SetMainContent);
         this.security = security;
+        timer = new Timer() {
+            @Override
+            public void run() {
+                if (!running) {
+                    filterCharities();
+                }
+            }
+        };
     }
     
     @Override
@@ -66,16 +82,20 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
         dispatcher.execute(new CharitySearchAction(params), new CustomAsyncCallback<CharitySearchResult>() {
             @Override
             public void onSuccess(CharitySearchResult result) {
-                getView().clear();
-                if (result != null && !Util.isEmpty(result.getCharities())) {
-                    for (Charity bean : result.getCharities()) {
-                        CharityItemPresenter item = charityItemProvider.get();
-                        item.setBean(bean);
-                        setInSlot(TYPE_SetCharityItem, item);
-                    }
-                }
+                populateView(result);
             }
         });
+    }
+
+    protected void populateView(CharitySearchResult result) {
+        getView().clear();
+        if (result != null && !Util.isEmpty(result.getCharities())) {
+            for (Charity bean : result.getCharities()) {
+                CharityItemPresenter item = charityItemProvider.get();
+                item.setBean(bean);
+                setInSlot(TYPE_SetCharityItem, item);
+            }
+        }
     }
 
     @Override
@@ -93,6 +113,27 @@ public class HomePagePresenter extends Presenter<HomePagePresenter.MyView, HomeP
                         placeManager.revealPlace(request);
                     }
                 });
+            }
+        });
+        
+        registerHandler(getView().getCharitySearch().addKeyPressHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                timer.schedule(1000);
+            }
+        }));
+    }
+
+    private void filterCharities() {
+        running = true;
+        CharitySearchParams params = new CharitySearchParams();
+        params.setLimit(30);
+        params.setText(getView().getCharitySearchText().getText());
+        dispatcher.execute(new CharitySearchAction(params), new CustomAsyncCallback<CharitySearchResult>() {
+            @Override
+            public void onSuccess(CharitySearchResult result) {
+                running = false;
+                populateView(result);
             }
         });
     }

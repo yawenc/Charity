@@ -7,6 +7,7 @@ import com.bertazoli.charity.server.handlers.LogoutHandler;
 import com.bertazoli.charity.server.handlers.OracleHandler;
 import com.bertazoli.charity.server.handlers.SearchUsernameHandler;
 import com.bertazoli.charity.server.handlers.SignupHandler;
+import com.bertazoli.charity.server.handlers.donate.FetchTotalDonationsHandler;
 import com.bertazoli.charity.server.handlers.donate.SetExpressChecktoutHandler;
 import com.bertazoli.charity.server.handlers.user.FetchUserFromSessionHandler;
 import com.bertazoli.charity.shared.SharedTokens;
@@ -16,6 +17,7 @@ import com.bertazoli.charity.shared.action.LogoutAction;
 import com.bertazoli.charity.shared.action.OracleAction;
 import com.bertazoli.charity.shared.action.SearchUsernameAction;
 import com.bertazoli.charity.shared.action.SignupAction;
+import com.bertazoli.charity.shared.action.donate.FetchTotalDonationsAction;
 import com.bertazoli.charity.shared.action.donate.SetExpressChecktoutAction;
 import com.bertazoli.charity.shared.action.user.FetchUserFromSessionAction;
 import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
@@ -32,6 +34,7 @@ public class ServerModule extends HandlerModule {
         bindHandler(OracleAction.class, OracleHandler.class);
         bindHandler(SearchUsernameAction.class, SearchUsernameHandler.class);
         bindHandler(FetchUserFromSessionAction.class, FetchUserFromSessionHandler.class);
+        bindHandler(FetchTotalDonationsAction.class, FetchTotalDonationsHandler.class);
         bindHandler(CharitySearchAction.class, CharitySearchHandler.class, LoggedInActionValidator.class);
         bindHandler(SetExpressChecktoutAction.class, SetExpressChecktoutHandler.class, LoggedInActionValidator.class);
     }

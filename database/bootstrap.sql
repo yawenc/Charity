@@ -28,35 +28,18 @@ CREATE TABLE user_token (
 --rollback drop table user_token;
 --rollback drop table user;
 
---changeset VitorBertazoli:charity_status (dbms:mysql failOnError:true)
-CREATE TABLE charity_status (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  status varchar(30),
-  PRIMARY KEY (id)
-);
---rollback drop table charity_status;
-
---changeset VitorBertazoli:charity_sanction (dbms:mysql failOnError:true)
-CREATE TABLE charity_sanction (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  sanction varchar(15),
-  PRIMARY KEY (id)
-);
---rollback drop table charity_sanction;
-
 --changeset VitorBertazoli:charity_table (dbms:mysql failOnError:true)
 CREATE TABLE charity (
   id int(11) NOT NULL AUTO_INCREMENT,
   registrationNumber varchar(20) NOT NULL,
   name varchar(200),
-  statusId int(11) NOT NULL,
-  sanctionId int(11),
-  designationCode char,
+  status int(11) NOT NULL,
+  sanction int(11),
+  designationCode int(11),
   effectiveDateOfStatus date,
-  categoryCode int(5),
+  category int(11),
   PRIMARY KEY (id),
-  UNIQUE KEY registrationNumber (registrationNumber),
-  FOREIGN KEY (statusId) REFERENCES charity_status(id) ON DELETE CASCADE
+  UNIQUE KEY registrationNumber (registrationNumber)
 );
 --rollback drop table charity;
 
@@ -80,8 +63,8 @@ CREATE TABLE state (
 CREATE TABLE charity_address (
   id int(11) NOT NULL AUTO_INCREMENT,
   charityId int(11) NOT NULL,
-  countryId int(11) NOT NULL,
-  stateId int(11) NOT NULL,
+  countryId int(11),
+  stateId int(11),
   street varchar(100),
   city varchar(45),
   postalCode varchar(10),
@@ -93,6 +76,36 @@ CREATE TABLE charity_address (
 --rollback drop table charity_address;
 --rollback drop table state;
 --rollback drop table country;
+
+--changeset VitorBertazoli:createDrawTable (dbms:mysql failOnError:true)
+CREATE TABLE draw (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  drawDateStart timestamp NOT NULL,
+  drawDateEnd timestamp NOT NULL,
+  status varchar(20) NOT NULL,
+  active boolean DEFAULT FALSE,
+  PRIMARY KEY (id)
+);
+--rollback DROP TABLE draw;
+
+--changeset VitorBertazoli:createDonationTable (dbms:mysql failOnError:true)
+CREATE TABLE donation (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  userId int(11) NOT NULL,
+  drawId int(11) NOT NULL,
+  donationDate timestamp NOT NULL,
+  transaction varchar(30) NOT NULL,
+  feeAmountCurrency varchar(3),
+  feeAmountValue numeric(9,4),
+  grossAmountCurrency varchar(3),
+  grossAmountValue numeric(9,4),
+  paymentStatus varchar(30),
+  paymentType varchar(15),
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (drawId) REFERENCES draw(id) ON DELETE CASCADE
+);
+--rollback DROP TABLE donation;
 
 --changeset VitorBertazoli:insertFirstUser (dbms:mysql failOnError:true)
 INSERT INTO user (firstname, lastname, username, email, password, salt, dob, activated, createdOn, activatedOn, active) VALUES

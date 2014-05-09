@@ -4,7 +4,14 @@
 
     <!-- http://docs.sencha.com/gxt-guides/3 - GXT guides -->
     <!-- http://docs.sencha.com/gxt-guides/3/ui/layout/LayoutContainers.html - About layout containers -->
-             
-    <container:Viewport ui:field="main"/>
-    
+    <ui:style>
+        .widget {
+            margin-top: 25px;
+        }
+    </ui:style>
+    <g:HTMLPanel>
+        <g:SimplePanel ui:field="header" />
+        <container:Viewport styleName="{style.widget}" ui:field="main"/>
+        <g:SimplePanel ui:field="footer" />
+    </g:HTMLPanel>
 </ui:UiBinder>

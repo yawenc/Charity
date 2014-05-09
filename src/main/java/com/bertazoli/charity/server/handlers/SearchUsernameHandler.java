@@ -20,7 +20,7 @@ public class SearchUsernameHandler implements ActionHandler<SearchUsernameAction
 
     @Override
     public Class<SearchUsernameAction> getActionType() {
-        return null;
+        return SearchUsernameAction.class;
     }
 
     @Override

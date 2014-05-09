@@ -8,8 +8,10 @@ import javax.persistence.TypedQuery;
 
 import com.bertazoli.charity.shared.action.CharitySearchResult;
 import com.bertazoli.charity.shared.beans.Charity;
+import com.bertazoli.charity.shared.beans.enums.CharityStatus;
 import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.searchparams.CharitySearchParams;
+import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -55,13 +57,20 @@ public class CharityBusinessLogic extends BaseDAO<Charity> {
         EntityManager em = createEntityManager();
         try {
             ArrayList<Object> params = new ArrayList<Object>();
-            StringBuilder sb = new StringBuilder("SELECT a FROM Charity a ");
+            StringBuilder sb = new StringBuilder("SELECT a FROM Charity a WHERE status = :status");
+            
             if (searchParams.getCharityId() != null && searchParams.getCharityId() != 0) {
-                sb.append(" WHERE id = ?");
+                sb.append(" AND id = ?");
                 params.add(searchParams.getCharityId());
             }
             
+            if (!Util.isNullOrEmpty(searchParams.getText())) {
+                sb.append(" AND name like ?");
+                params.add("%"+searchParams.getText()+"%");
+            }
+            
             TypedQuery<Charity> query = buildQuery(sb.toString(), params, Charity.class);
+            query.setParameter("status", CharityStatus.REGISTERED);
             if (searchParams.getLimit() != 0) {
                 query.setMaxResults(searchParams.getLimit());
             }

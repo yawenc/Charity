@@ -2,6 +2,7 @@ package com.bertazoli.charity.server.oracle;
 
 import java.util.HashMap;
 
+import com.bertazoli.charity.server.oracle.definition.CityOracleDefinition;
 import com.bertazoli.charity.server.oracle.definition.CountryOracleDefinition;
 import com.bertazoli.charity.server.oracle.definition.OracleDefinition;
 import com.bertazoli.charity.server.oracle.definition.StateOracleDefinition;
@@ -17,6 +18,7 @@ public class DataTypeConfig {
     public DataTypeConfig() {
         map.put(DataType.COUNTRY, new CountryOracleDefinition());
         map.put(DataType.STATE, new StateOracleDefinition());
+        map.put(DataType.CITY, new CityOracleDefinition());
     }
     
     public OracleDefinition getDefinition(DataType type) {

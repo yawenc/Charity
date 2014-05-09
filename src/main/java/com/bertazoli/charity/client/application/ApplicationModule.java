@@ -2,6 +2,7 @@ package com.bertazoli.charity.client.application;
 
 import com.bertazoli.charity.client.application.charity.RegisterCharityModule;
 import com.bertazoli.charity.client.application.donate.DonateModule;
+import com.bertazoli.charity.client.application.header.HeaderModule;
 import com.bertazoli.charity.client.application.home.HomeModule;
 import com.bertazoli.charity.client.application.login.LoginModule;
 import com.bertazoli.charity.client.application.main.MainModule;
@@ -24,6 +25,7 @@ public class ApplicationModule extends AbstractPresenterModule {
         install(new UserCreatedModule());
         install(new CharityItemModule());
         install(new DonateModule());
+        install(new HeaderModule());
 
         bindPresenter(ApplicationPresenter.class, ApplicationPresenter.MyView.class, ApplicationView.class, ApplicationPresenter.MyProxy.class);
 

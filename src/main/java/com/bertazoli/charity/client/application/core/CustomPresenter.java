@@ -15,4 +15,8 @@ public abstract class CustomPresenter<V extends View, Proxy_ extends Proxy<?>> e
     public CustomPresenter(EventBus eventBus, V view, Proxy_ proxy, Type<RevealContentHandler<?>> slotMain) {
         super(eventBus, view, proxy, slotMain);
     }
+    
+    public CustomPresenter(EventBus eventBus, V view, Proxy_ proxy, RevealType revealType) {
+        super(eventBus, view, proxy, revealType);
+    }
 }

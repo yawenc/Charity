@@ -7,7 +7,7 @@
              xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button"
              ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
              ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-             ui:generateLocales="default">
+             ui:generateLocales="en_US">
     <container:CenterLayoutContainer>
         <f:FormPanel ui:field="mainPanel">
             <g:HTMLPanel>

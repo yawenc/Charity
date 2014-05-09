@@ -18,7 +18,7 @@ public class CharitySearchHandler implements ActionHandler<CharitySearchAction, 
 
     @Override
     public Class<CharitySearchAction> getActionType() {
-        return null;
+        return CharitySearchAction.class;
     }
 
     @Override

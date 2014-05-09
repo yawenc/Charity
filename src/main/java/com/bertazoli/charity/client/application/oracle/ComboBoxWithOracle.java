@@ -75,4 +75,8 @@ public class ComboBoxWithOracle<U extends OracleLoadConfigBean> {
     public void filter(ConfigFilter filter) {
         config.setFilter(filter);
     }
+
+    public void setPlaceHolder(String placeHolder) {
+        combobox.getElement();
+    }
 }

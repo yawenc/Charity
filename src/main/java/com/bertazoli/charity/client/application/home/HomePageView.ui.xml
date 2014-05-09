@@ -1,12 +1,15 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
     <ui:with type="com.bertazoli.charity.client.place.NameTokens" field="nameTokens"></ui:with>
     <g:HTMLPanel>
         <g:Hyperlink ui:field="login" targetHistoryToken="{nameTokens.getLogin}">Login</g:Hyperlink>
         <g:Hyperlink ui:field="logout" targetHistoryToken="logout">Logout</g:Hyperlink>
+        <!-- 
         <g:Hyperlink targetHistoryToken="{nameTokens.getUserSettings}">User Settings</g:Hyperlink>
         <g:Hyperlink targetHistoryToken="{nameTokens.getRegisterCharity}">Register Charity</g:Hyperlink>
+        -->
         <g:HTMLPanel>
             <ui:msg description="charitiesThatHaveNeverReceivedADonationFromThisWebsite">
                 Charities that have never received a donation from this website.
@@ -14,6 +17,12 @@
             <ui:msg description="selectOneBelowToHelpThemOut">
                 Select one below to help them out!!!
             </ui:msg>
+            <f:FieldLabel>
+                <ui:msg description="searchForCharity">Search for charity</ui:msg>
+                <f:widget>
+                    <f:TextField ui:field="charityName" />
+                </f:widget>
+            </f:FieldLabel>
             <container:FlowLayoutContainer ui:field="charityList">
             </container:FlowLayoutContainer>
         </g:HTMLPanel>

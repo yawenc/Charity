@@ -12,6 +12,7 @@ public abstract class CustomAsyncCallback<T> implements AsyncCallback<T> {
         Label label = new Label(caught.getMessage());
         Popup popup = new Popup();
         popup.add(label);
+        popup.center();
         popup.show();
     }
 

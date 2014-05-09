@@ -33,7 +33,9 @@ public class OracleBusinessLogic {
             sb.append(definition.getSelect());
             sb.append(" FROM ");
             sb.append(definition.getTable());
-            sb.append(" " + definition.getWhere(load.getQuery() + " "));
+            sb.append(" ");
+            sb.append(definition.getWhere(load.getQuery()));
+            sb.append(" ");
             
             Query query = em.createQuery(sb.toString());
             ArrayList<IsOracleData> items = (ArrayList<IsOracleData>) query.getResultList();

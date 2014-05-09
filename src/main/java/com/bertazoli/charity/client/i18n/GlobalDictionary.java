@@ -19,5 +19,15 @@ public interface GlobalDictionary extends Messages {
     @DefaultMessage("###,##0.00")
     String currencyFormat();
 
-    
+    @DefaultMessage("Country")
+    String country();
+
+    @DefaultMessage("State")
+    String state();
+
+    @DefaultMessage("Value has to be multiple of {0}")
+    String valueHasToBeMultipleOf(int multipleOf);
+
+    @DefaultMessage("Total that have been donated ${0}")
+    String totalThatHaveBeenDonated(String donated);
 }

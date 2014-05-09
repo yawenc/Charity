@@ -1,5 +1,7 @@
 package com.bertazoli.charity.server.oracle.definition;
 
+import com.bertazoli.charity.shared.util.Util;
+
 
 public class CountryOracleDefinition extends OracleDefinition {
     @Override
@@ -14,6 +16,9 @@ public class CountryOracleDefinition extends OracleDefinition {
 
     @Override
     public String getWhere(String query) {
-        return "WHERE (UPPER(name) LIKE '%"+query.trim().toUpperCase()+"%' OR UPPER(code) = '"+query.trim().toUpperCase()+"')";
+        if (!Util.isNullOrEmpty(query)) {
+            return "WHERE (UPPER(name) LIKE '%"+query.trim().toUpperCase()+"%' OR UPPER(code) = '"+query.trim().toUpperCase()+"')";    
+        }
+        return "";
     }
 }

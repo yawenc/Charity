@@ -46,6 +46,8 @@ public class BootstraperImpl implements Bootstrapper {
                     placeManager.revealCurrentPlace();
                 }
             });
+        } else {
+            placeManager.revealCurrentPlace();
         }
     }
 }

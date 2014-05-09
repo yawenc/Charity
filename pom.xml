@@ -5,7 +5,7 @@
 
     <groupId>com.bertazoli.charity</groupId>
     <artifactId>Charity</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
     <name>GWTP Basic with GXT</name>
     <description>Basic GWTP application with the GXT library</description>
@@ -31,6 +31,9 @@
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
         <maven-processor-plugin.version>2.0.5</maven-processor-plugin.version>
         <maven-build-helper-plugin.version>1.7</maven-build-helper-plugin.version>
+        <maven-war-plugin.version>2.3</maven-war-plugin.version>
+        <build-helper-maven.version>1.8</build-helper-maven.version>
+        <log4j.version>1.7.7</log4j.version>
 
         <!-- liquibase -->
         <liquibase.version>3.1.1</liquibase.version>
@@ -61,11 +64,41 @@
                 <configuration>
                     <changeLogFile>database/bootstrap.xml</changeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3306/charity</url>
-                    <username>root</username>
-                    <password>root</password>
+                    <url>jdbc:mysql://localhost:3306/bertazol_charity</url>
+                    <username>bertazol_charity</username>
+                    <password>1q2w3e4r</password>
                     <clearCheckSums>true</clearCheckSums>
                     <rollbackTag>initial</rollbackTag>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+                <configuration>
+                    <warName>Charity</warName>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>*.html</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/webapp/Charity</directory>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
             
@@ -108,11 +141,9 @@
                 <configuration>
                     <!-- With multiple tests use GwtTestSuite.java for speed -->
                     <includes>**/*GwtTest.java</includes>
-                    <extraJvmArgs>-Xss1024K -Xmx1024M -XX:MaxPermSize=256M</extraJvmArgs>
-
+                    <extraJvmArgs>-Xmx512m -Xss1024k</extraJvmArgs>
                     <copyWebapp>true</copyWebapp>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
-
                     <runTarget>Charity.html</runTarget>
                     <modules>
                         <module>com.bertazoli.charity.Charity</module>
@@ -127,8 +158,52 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build-helper-maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources/annotations</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>production</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>${liquibase.version}</version>
+                        <configuration>
+                            <changeLogFile>database/bootstrap.xml</changeLogFile>
+                            <driver>com.mysql.jdbc.Driver</driver>
+                            <url>jdbc:mysql://bertazoli.com:3306/bertazol_charity</url>
+                            <username>bertazol_charity</username>
+                            <password>1q2w3e4r</password>
+                            <clearCheckSums>true</clearCheckSums>
+                            <rollbackTag>initial</rollbackTag>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <!-- GXT -->
@@ -144,6 +219,14 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwt.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwt.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- GWT-Platform -->
@@ -151,8 +234,15 @@
             <groupId>com.gwtplatform</groupId>
             <artifactId>gwtp-all</artifactId>
             <version>${gwtp.version}</version>
+            <scope>compile</scope>
         </dependency>
         
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-log4j12</artifactId>
+        	<version>${log4j.version}</version>
+        </dependency>
+            
         <!-- 
         <dependency>
             <groupId>com.gwtplatform</groupId>
@@ -192,6 +282,19 @@
             <artifactId>gin</artifactId>
             <version>${gin.version}</version>
         </dependency>
+        
+        <!-- maven war -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${maven-war-plugin.version}</version>
+        </dependency>
+        
+        <dependency>
+	       <groupId>org.codehaus.mojo</groupId>
+	       <artifactId>build-helper-maven-plugin</artifactId>
+	       <version>${build-helper-maven.version}</version>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -225,12 +328,13 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate-entity-manager.version}</version>
         </dependency>
+        <!-- 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
             <version>${hibernate-annotations.version}</version>
         </dependency>
-
+        -->
         <!-- mysql -->        
         <dependency>
             <groupId>mysql</groupId>

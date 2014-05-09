@@ -5,9 +5,9 @@
     <inherits name='com.google.gwt.inject.Inject' />
     <inherits name="com.google.gwt.i18n.I18N" />
     
+    <extend-property name="locale" values="en_US"/>
     <extend-property name="locale" values="pt_BR"/>
     <extend-property name="locale" values="fr_CA"/>
-    <extend-property name="locale" values="en"/>
 
     <!-- GXT -->
     <stylesheet src="reset.css" />
@@ -24,6 +24,7 @@
 
     <source path='client' />
     <source path='shared' />
+    <source path='server' />
 
     <!-- Default GIN Module -->
     <set-configuration-property name="gin.ginjector.modules" value="com.bertazoli.charity.client.gin.ClientModule" />

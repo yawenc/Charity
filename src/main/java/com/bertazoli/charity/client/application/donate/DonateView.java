@@ -2,11 +2,12 @@ package com.bertazoli.charity.client.application.donate;
 
 import javax.inject.Inject;
 
+import com.bertazoli.charity.client.application.core.validators.MultipleOfValidator;
 import com.bertazoli.charity.client.application.donate.widget.CharityWidget;
 import com.bertazoli.charity.client.application.security.SecurityManager;
 import com.bertazoli.charity.client.i18n.GlobalDictionary;
 import com.bertazoli.charity.shared.beans.Charity;
-import com.bertazoli.charity.shared.beans.Donation;
+import com.bertazoli.charity.shared.beans.DonationInformation;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -49,6 +50,7 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
         amountToDonate.setAllowBlank(false);
         amountToDonate.setFormat(NumberFormat.getFormat(dictionary.currencyFormat()));
         amountToDonate.addValidator(new MinNumberValidator<Integer>(15));
+        amountToDonate.addValidator(new MultipleOfValidator(5, dictionary.valueHasToBeMultipleOf(5)));
         amountToKeepText.setValue(15);
         amountToKeepText.addValidator(new MinNumberValidator<Integer>(0));
         amountToKeepText.addValidator(new MaxNumberValidator<Integer>(30));
@@ -98,7 +100,7 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
     }
 
     @Override
-    public Donation mapBean(Donation bean) {
+    public DonationInformation mapBean(DonationInformation bean) {
         bean.setUserId(securityManager.getUser().getId());
         bean.setAmountToDonate(amountToDonate.getValue());
         bean.setPercentageToKeep(amountToKeepText.getValue());

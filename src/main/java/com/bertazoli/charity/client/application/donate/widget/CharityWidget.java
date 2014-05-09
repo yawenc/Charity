@@ -23,6 +23,7 @@ public class CharityWidget extends Composite {
     public void setBean(Charity bean) {
         name.setText(bean.getName());
         registrationNumber.setText(bean.getRegistrationNumber());
-        category.setText(String.valueOf(bean.getCategoryCode()));
+        if (bean.getCategory() != null)
+        category.setText(bean.getCategory().getDescription());
     }
 }

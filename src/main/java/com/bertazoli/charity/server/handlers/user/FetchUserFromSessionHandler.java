@@ -19,7 +19,7 @@ public class FetchUserFromSessionHandler implements ActionHandler<FetchUserFromS
 
     @Override
     public Class<FetchUserFromSessionAction> getActionType() {
-        return null;
+        return FetchUserFromSessionAction.class;
     }
 
     @Override

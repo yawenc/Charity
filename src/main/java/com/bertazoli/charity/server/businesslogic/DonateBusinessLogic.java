@@ -1,19 +1,30 @@
 package com.bertazoli.charity.server.businesslogic;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import urn.ebay.api.PayPalAPI.DoExpressCheckoutPaymentReq;
 import urn.ebay.api.PayPalAPI.DoExpressCheckoutPaymentRequestType;
@@ -33,18 +44,14 @@ import urn.ebay.apis.eBLBaseComponents.PaymentInfoType;
 import urn.ebay.apis.eBLBaseComponents.SetExpressCheckoutRequestDetailsType;
 
 import com.bertazoli.charity.shared.beans.Donation;
+import com.bertazoli.charity.shared.beans.DonationInformation;
+import com.bertazoli.charity.shared.beans.Draw;
 import com.bertazoli.charity.shared.beans.User;
+import com.bertazoli.charity.shared.beans.enums.DrawStatus;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.gwtplatform.dispatch.shared.ActionException;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidCredentialException;
-import com.paypal.exception.InvalidResponseDataException;
-import com.paypal.exception.MissingCredentialException;
-import com.paypal.exception.SSLConfigurationException;
-import com.paypal.sdk.exceptions.OAuthException;
 
 @Singleton
 public class DonateBusinessLogic {
@@ -65,7 +72,7 @@ public class DonateBusinessLogic {
         return configurationMap;
     }
 
-    public String setExpressChecktout(Donation donation) throws ActionException {
+    public String setExpressChecktout(DonationInformation donation) throws ActionException {
         HttpServletRequest request = requestProvider.get();
         HttpSession session = request.getSession();
         User user = new User();
@@ -79,20 +86,22 @@ public class DonateBusinessLogic {
         SetExpressCheckoutRequestType setExpressCheckoutReq = new SetExpressCheckoutRequestType();
         SetExpressCheckoutRequestDetailsType details = new SetExpressCheckoutRequestDetailsType();
         
+        boolean isSandboxMode = configurationMap.containsKey("mode") && configurationMap.get("mode").equalsIgnoreCase("sandbox") && request.getServerName().contains("127.0.0.1");
         StringBuffer url = new StringBuffer();
         url.append(request.getScheme()+"://");
         url.append(request.getServerName());
-        url.append(":");
-        url.append(request.getServerPort());
+        
+        if (isSandboxMode) {
+            url.append(":");
+            url.append(request.getServerPort());
+        }
         String returnURL = url.toString() + "/doExpressCheckout";
-        details.setReturnURL(returnURL);
-        
         url.append("/Charity.html");
-        
-        if (configurationMap.containsKey("mode") && configurationMap.get("mode").equalsIgnoreCase("sandbox")) {
-            url.append("?gwt.codesvr=127.0.0.1:9997");
+        if (isSandboxMode) {
+            url.append("?gwt.codesvr=127.0.0.1:9998");
         }
         
+        details.setReturnURL(returnURL);
         String cancelURL = url.toString() + "/#home";
         details.setCancelURL(cancelURL);
         details.setBuyerEmail(user.getEmail());
@@ -127,53 +136,28 @@ public class DonateBusinessLogic {
         try {
             SetExpressCheckoutResponseType setExpressCheckoutResponse = service.setExpressCheckout(expressCheckoutReq);
             if (setExpressCheckoutResponse != null) {
-                session.setAttribute("lastReq", service.getLastRequest());
-                session.setAttribute("lastResp", service.getLastResponse());
-                session.setAttribute("donation", donation);
-                if (setExpressCheckoutResponse.getAck().toString()
-                        .equalsIgnoreCase("SUCCESS")) {
-                    Map<Object, Object> map = new LinkedHashMap<Object, Object>();
-                    map.put("Ack", setExpressCheckoutResponse.getAck());
-                    map.put("Token", setExpressCheckoutResponse.getToken());
-                    map.put("Redirect URL", "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + setExpressCheckoutResponse.getToken());
-                    session.setAttribute("map", map);
+                if (setExpressCheckoutResponse.getAck().toString().equalsIgnoreCase("SUCCESS")) {
+                    session.setAttribute("donation", donation);
                     return "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + setExpressCheckoutResponse.getToken();
                 } else {
-                    session.setAttribute("Error", setExpressCheckoutResponse.getErrors());
                     return url.toString()+"/#error";
                 }
             }
-        } catch (SSLConfigurationException e) {
-            e.printStackTrace();
-        } catch (InvalidCredentialException e) {
-            e.printStackTrace();
-        } catch (HttpErrorException e) {
-            e.printStackTrace();
-        } catch (InvalidResponseDataException e) {
-            e.printStackTrace();
-        } catch (ClientActionRequiredException e) {
-            e.printStackTrace();
-        } catch (MissingCredentialException e) {
-            e.printStackTrace();
-        } catch (OAuthException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
     
-    public String doExpressCheckout(Donation donation, String token, String payerID, HttpServletRequest req, HttpServletResponse resp) {
+    public String doExpressCheckout(DonationInformation donation, String token, String payerID, HttpServletRequest req, HttpServletResponse resp) {
         Map<String, String> configurationMap = getConfigurationMap();
         PayPalAPIInterfaceServiceService service = new PayPalAPIInterfaceServiceService(configurationMap);
         
         HttpSession session = req.getSession();
+        User user = new User();
+        Long userId = (Long) (session.getAttribute("user.id"));
+        user.setId(userId);
+        user = userBL.retrieve(user);
         DoExpressCheckoutPaymentRequestType doCheckoutPaymentRequestType = new DoExpressCheckoutPaymentRequestType();
         DoExpressCheckoutPaymentRequestDetailsType details = new DoExpressCheckoutPaymentRequestDetailsType();
 
@@ -217,47 +201,161 @@ public class DonateBusinessLogic {
             e.printStackTrace();
         }
         
+        boolean isSandboxMode = configurationMap.containsKey("mode") && configurationMap.get("mode").equalsIgnoreCase("sandbox") && req.getServerName().contains("127.0.0.1");
+        StringBuffer url = new StringBuffer();
+        url.append(req.getScheme()+"://");
+        url.append(req.getServerName());
+        
+        if (isSandboxMode) {
+            url.append(":");
+            url.append(req.getServerPort());
+        }
+        
+        url.append("/Charity.html");
+        if (isSandboxMode) {
+            url.append("?gwt.codesvr=127.0.0.1:9998");
+        }
+        String returnURL = url.toString() + "/#home";
+        String transactionError = url.toString() + "/#transactionError";
+        
         if (doCheckoutPaymentResponseType != null) {
-            session.setAttribute("lastReq", service.getLastRequest());
-            session.setAttribute("lastResp", service.getLastResponse());
-            if (doCheckoutPaymentResponseType.getAck().toString().equalsIgnoreCase("SUCCESS")) {
-                Map<Object, Object> map = new LinkedHashMap<Object, Object>();
-                map.put("Ack", doCheckoutPaymentResponseType.getAck());
-                Iterator<PaymentInfoType> iterator = doCheckoutPaymentResponseType.getDoExpressCheckoutPaymentResponseDetails().getPaymentInfo().iterator();
-                int index = 1;
-                /*
-                 * Unique transaction ID of the payment.
-                 Note:
-                    If the PaymentAction of the request was Authorization or Order, 
-                    this value is your AuthorizationID for use with the Authorization 
-                    & Capture APIs.
-                    Character length and limitations: 19 single-byte characters
-                 */
-                while (iterator.hasNext()) {
-                    PaymentInfoType result = (PaymentInfoType) iterator.next();
-                    map.put("Transaction ID" + index, result.getTransactionID());
-                    index++;
-                }
-                session.setAttribute("transactionId", doCheckoutPaymentResponseType.getDoExpressCheckoutPaymentResponseDetails().getPaymentInfo().get(0).getTransactionID());
-                session.setAttribute("map", map);
-                try {
-                    StringBuffer url = new StringBuffer();
-                    url.append(req.getScheme()+"://");
-                    url.append(req.getServerName());
-                    url.append(":");
-                    url.append(req.getServerPort());
-                    url.append("/Charity.html");
-                    if (configurationMap.containsKey("mode") && configurationMap.get("mode").equalsIgnoreCase("sandbox")) {
-                        url.append("?gwt.codesvr=127.0.0.1:9997");
+            try {
+                if (doCheckoutPaymentResponseType.getAck().toString().equalsIgnoreCase("SUCCESS")) {
+                    Map<Object, Object> map = new LinkedHashMap<Object, Object>();
+                    map.put("Ack", doCheckoutPaymentResponseType.getAck());
+                    Iterator<PaymentInfoType> iterator = doCheckoutPaymentResponseType.getDoExpressCheckoutPaymentResponseDetails().getPaymentInfo().iterator();
+                    while (iterator.hasNext()) {
+                        // there should be only one payment for now
+                        PaymentInfoType result = (PaymentInfoType) iterator.next();
+                        Donation bean = new Donation();
+                        EntityManager em = BaseDAO.createEntityManager();
+                        EntityTransaction tx = em.getTransaction();
+                        try {
+                            XMLGregorianCalendar cal = DatatypeFactory.newInstance().newXMLGregorianCalendar(result.getPaymentDate());
+                            Calendar c2 = cal.toGregorianCalendar();
+                            bean.setDonationDate(new Timestamp(c2.getTime().getTime()));
+                            bean.setUserId(user.getId());
+                            bean.setDrawId(getCurrentDrawId());
+                            bean.setTransaction(result.getTransactionID());
+                            bean.setFeeAmountCurrency(result.getFeeAmount().getCurrencyID());
+                            bean.setFeeAmountValue(Double.parseDouble(result.getFeeAmount().getValue()));
+                            bean.setGrossAmountCurrency(result.getGrossAmount().getCurrencyID());
+                            bean.setGrossAmountValue(Double.parseDouble(result.getGrossAmount().getValue()));
+                            bean.setPaymentStatus(result.getPaymentStatus());
+                            bean.setPaymentType(result.getPaymentType());
+                            
+                            tx.begin();
+                            em.persist(bean);
+                            tx.commit();
+                            
+                        } catch (DatatypeConfigurationException e) {
+                            e.printStackTrace();
+                        } finally {
+                            em.close();
+                        }
                     }
-                    resp.sendRedirect(url.toString()+"#home");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    resp.sendRedirect(returnURL);
+                } else {
+                    resp.sendRedirect(transactionError);
                 }
-            } else {
-                session.setAttribute("Error", doCheckoutPaymentResponseType.getErrors());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return null;
+    }
+
+    private Long getCurrentDrawId() {
+        EntityManager em = BaseDAO.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        Draw draw = null;
+        try {
+            TypedQuery<Draw> query = em.createQuery("SELECT a FROM Draw a WHERE drawDateStart <= :dateStart AND drawDateEnd >= :dateEnd AND active IS TRUE AND status = :status", Draw.class);
+            Date now = new Date();
+            query.setParameter("dateStart", now);
+            query.setParameter("dateEnd", now);
+            query.setParameter("status", DrawStatus.CURRENT);
+            try {
+                draw = query.getSingleResult();
+            } catch (NoResultException e) {
+                throw new PersistenceException("draw invalid");
+            }
+        } catch (Exception e) {
+            tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        
+        if (draw != null) {
+            return draw.getId();
+        }
+        return null;
+    }
+
+    public void createDrawIfNotExists() {
+        EntityManager em = BaseDAO.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            TypedQuery<Draw> query = em.createQuery("SELECT a FROM Draw a WHERE drawDateStart <= :dateStart AND drawDateEnd >= :dateEnd AND active IS TRUE", Draw.class);
+            Date now = new Date();
+            query.setParameter("dateStart", now);
+            query.setParameter("dateEnd", now);
+            Draw draw = null;
+            try {
+                draw = query.getSingleResult();
+            } catch (NoResultException e) {
+                
+            }
+            
+            if (draw == null) {
+                // create new draw
+                Date startDate = null;
+                Date endDate = null;
+                Calendar cal = new GregorianCalendar();
+                cal.setTime(now);
+                cal.set(Calendar.DAY_OF_MONTH, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                startDate = cal.getTime();
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+                cal.set(Calendar.MINUTE, 59);
+                cal.set(Calendar.SECOND, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+                endDate = cal.getTime();
+                
+                draw = new Draw();
+                draw.setActive(true);
+                draw.setDrawDateStart(new Timestamp(startDate.getTime()));
+                draw.setDrawDateEnd(new Timestamp(endDate.getTime()));
+                draw.setStatus(DrawStatus.CURRENT);
+                
+                tx.begin();
+                em.persist(draw);
+                tx.commit();
+            }
+        } catch (Exception e) {
+            tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Double fetchTotalDonations() {
+        Long currentDrawId = getCurrentDrawId();
+        EntityManager em = BaseDAO.createEntityManager();
+        Query query = em.createNativeQuery("select sum(grossAmountValue) from donation where drawId = :drawId");
+        query.setParameter("drawId", currentDrawId);
+        try {
+            BigDecimal total = (BigDecimal) query.getSingleResult();
+            total = total.multiply(new BigDecimal(0.9)); // subtracts 10%
+            return total.doubleValue();
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 }
