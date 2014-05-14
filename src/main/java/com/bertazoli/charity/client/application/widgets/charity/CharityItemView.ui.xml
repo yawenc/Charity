@@ -2,6 +2,10 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
     <g:FocusPanel ui:field="mainPanel">
-        <g:Label ui:field="name" />
+        <g:HTMLPanel>
+            <g:Label ui:field="name" />
+            <g:Label ui:field="registrationNumber" />
+            <g:Label ui:field="category" />
+        </g:HTMLPanel>
     </g:FocusPanel>
 </ui:UiBinder>

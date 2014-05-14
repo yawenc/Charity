@@ -1,0 +1,9 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+             xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
+    <ui:with type="com.bertazoli.charity.client.place.NameTokens" field="nameTokens"></ui:with>
+    <g:HTMLPanel>
+        <ui:msg description="transactionFailed">Transaction failed</ui:msg>
+    </g:HTMLPanel>
+</ui:UiBinder>

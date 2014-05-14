@@ -8,11 +8,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewImpl;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.HasSelectHandlers;
 
 public class HeaderView extends ViewImpl implements HeaderPresenter.MyView {
     public interface Binder extends UiBinder<Widget, HeaderView> {
     }
-    
+
+    @UiField TextButton logout;
+    @UiField TextButton userSettings;
     @UiField Label totalDonated;
     @Inject GlobalDictionary dictionary;
 
@@ -24,5 +28,15 @@ public class HeaderView extends ViewImpl implements HeaderPresenter.MyView {
     @Override
     public void setTotalDonation(Double total) {
         totalDonated.setText(dictionary.totalThatHaveBeenDonated(NumberFormat.getFormat(dictionary.currencyFormat()).format(total)));
+    }
+
+    @Override
+    public HasSelectHandlers getLogoutButton() {
+        return logout;
+    }
+
+    @Override
+    public HasSelectHandlers getUserSettingsButton() {
+        return userSettings;
     }
 }

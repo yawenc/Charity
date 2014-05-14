@@ -39,6 +39,7 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
     private NumberField<Integer> amountToDonate;
     @Inject Provider<CharityWidget> charityWidgetProvider;
     @Inject SecurityManager securityManager;
+    private Charity bean;
 
     @Inject
     DonateView(Binder uiBinder, GlobalDictionary dictionary) {
@@ -69,6 +70,7 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
     @Override
     public void setTextPercentage(Integer percentage) {
         amountToKeepText.setValue(percentage);
+        amountToKeepText.validate();
     }
 
     @Override
@@ -78,11 +80,12 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
 
     @Override
     public void setSliderPercentage(Integer percentage) {
-        amountToKeep.setValue(percentage);
+        amountToKeep.setValue(percentage > 30 ? 30 : percentage);
     }
 
     @Override
     public void setBean(Charity bean) {
+        this.bean = bean;
         charityPanel.clear();
         CharityWidget widget = charityWidgetProvider.get();
         widget.setBean(bean);
@@ -104,6 +107,7 @@ public class DonateView extends ViewImpl implements DonatePresenter.MyView {
         bean.setUserId(securityManager.getUser().getId());
         bean.setAmountToDonate(amountToDonate.getValue());
         bean.setPercentageToKeep(amountToKeepText.getValue());
+        bean.setCharityId(this.bean.getId());
         return bean;
     }
 }

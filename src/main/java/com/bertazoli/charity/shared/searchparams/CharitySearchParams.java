@@ -6,6 +6,7 @@ public class CharitySearchParams implements IsSerializable {
     private int limit;
     private Long charityId;
     private String text;
+    private boolean allCharitiesCurrentDraw;
 
     public int getLimit() {
         return limit;
@@ -24,5 +25,11 @@ public class CharitySearchParams implements IsSerializable {
     }
     public void setText(String text) {
         this.text = text;
+    }
+    public boolean isAllCharitiesCurrentDraw() {
+        return allCharitiesCurrentDraw;
+    }
+    public void setAllCharitiesCurrentDraw(boolean allCharitiesCurrentDraw) {
+        this.allCharitiesCurrentDraw = allCharitiesCurrentDraw;
     }
 }

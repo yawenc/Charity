@@ -14,6 +14,7 @@ CREATE TABLE user (
   createdOn timestamp,
   activatedOn timestamp,
   active boolean,
+  userRole int(5),
   PRIMARY KEY (id),
   UNIQUE KEY UNIQUE_USER (username, email)
 );
@@ -93,6 +94,7 @@ CREATE TABLE donation (
   id int(11) NOT NULL AUTO_INCREMENT,
   userId int(11) NOT NULL,
   drawId int(11) NOT NULL,
+  charityId int(11) NOT NULL,
   donationDate timestamp NOT NULL,
   transaction varchar(30) NOT NULL,
   feeAmountCurrency varchar(3),
@@ -101,15 +103,44 @@ CREATE TABLE donation (
   grossAmountValue numeric(9,4),
   paymentStatus varchar(30),
   paymentType varchar(15),
+  completed boolean DEFAULT false,
+  paypalToken varchar(40),
   PRIMARY KEY (id),
   FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (drawId) REFERENCES draw(id) ON DELETE CASCADE
+  FOREIGN KEY (drawId) REFERENCES draw(id) ON DELETE CASCADE,
+  FOREIGN KEY (charityId) REFERENCES charity(id) ON DELETE CASCADE
 );
 --rollback DROP TABLE donation;
 
+--changeset VitorBertazoli:createUserTicketsTable (dbms:mysql failOnError:true)
+CREATE TABLE user_ticket (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  donationId int(11) NOT NULL,
+  ticketNumber varchar(70) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (donationId) REFERENCES donation(id) ON DELETE CASCADE
+);
+--rollback DROP TABLE user_ticket;
+
+--changeset VitorBertazoli:createDonationInformationTable (dbms:mysql failOnError:true)
+CREATE TABLE donation_information (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  userId int(11) NOT NULL,
+  drawId int(11) NOT NULL,
+  charityId int(11) NOT NULL,
+  paypalToken varchar(40),
+  amountToDonate int(11),
+  percentageToKeep int(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (drawId) REFERENCES draw(id) ON DELETE CASCADE,
+  FOREIGN KEY (charityId) REFERENCES charity(id) ON DELETE CASCADE
+);
+--rollback DROP TABLE donation_information;
+
 --changeset VitorBertazoli:insertFirstUser (dbms:mysql failOnError:true)
-INSERT INTO user (firstname, lastname, username, email, password, salt, dob, activated, createdOn, activatedOn, active) VALUES
-('Vitor','Bertazoli','vitor','vitor@bertazoli.com','f760d8462d5bf549ca5fa042a4f8c92ef8e6cdefb07299b8c6e0b856eec9fa3e','!,B@!ij,!}Rg=Sn/oyzO  <DI:Mkdfr_u7b_E:r:ZTG_/fWJ!v','1982-03-10',TRUE,'2014-04-25 13:18:10','2014-04-25 13:20:44',TRUE);
+INSERT INTO user (firstname, lastname, username, email, password, salt, dob, activated, createdOn, activatedOn, active, userRole) VALUES
+('Vitor','Bertazoli','vitor','vitor@bertazoli.com','f760d8462d5bf549ca5fa042a4f8c92ef8e6cdefb07299b8c6e0b856eec9fa3e','!,B@!ij,!}Rg=Sn/oyzO  <DI:Mkdfr_u7b_E:r:ZTG_/fWJ!v','1982-03-10',TRUE,'2014-04-25 13:18:10','2014-04-25 13:20:44',TRUE, 1);
 INSERT INTO user_token (userId, token) VALUES
 (1, 'dAfp7PXzIxTVbwjgKH2z8GBZCJZHS2XKhcuTHUhxORIom1ccHbhl0FzvzMTO4lPADsWi7KPpIqVVFju7CdkYrjjF5r3ynwBqRNkw');
 

@@ -15,6 +15,8 @@ public class CharityItemView extends ViewImpl implements CharityItemPresenter.My
     }
     
     @UiField Label name;
+    @UiField Label registrationNumber;
+    @UiField Label category;
     @UiField FocusPanel mainPanel;
     private Charity bean;
     
@@ -27,6 +29,8 @@ public class CharityItemView extends ViewImpl implements CharityItemPresenter.My
     public void setBean(Charity bean) {
         this.bean = bean;
         name.setText(bean.getName());
+        registrationNumber.setText(bean.getRegistrationNumber());
+        category.setText(bean.getCategory().getDescription());
     }
 
     @Override

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.bertazoli.charity.shared.beans.enums.UserRole;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -27,6 +28,7 @@ public class User implements IsSerializable, HasValidation {
     private Timestamp createdOn;
     private Timestamp activatedOn;
     private boolean active;
+    private UserRole userRole;
     
     @Transient private boolean isLoggedIn;
 
@@ -141,5 +143,13 @@ public class User implements IsSerializable, HasValidation {
 
     public void setCreatedOn(Timestamp createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }

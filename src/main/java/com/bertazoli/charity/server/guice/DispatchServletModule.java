@@ -9,9 +9,7 @@ import com.gwtplatform.dispatch.shared.SecurityCookie;
 public class DispatchServletModule extends ServletModule {
     @Override
     public void configureServlets() {
-        
         bindConstants();
-        
         serve("/" + ActionImpl.DEFAULT_SERVICE_NAME + "*").with(DispatchServiceImpl.class);
     }
 

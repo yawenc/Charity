@@ -1,12 +1,10 @@
 package com.bertazoli.charity.client.application.home;
 
 import com.bertazoli.charity.client.i18n.GlobalDictionary;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -21,9 +19,8 @@ public class HomePageView extends ViewImpl implements HomePagePresenter.MyView {
     public interface Binder extends UiBinder<Widget, HomePageView> {
     }
 
-    @UiField Hyperlink login;
-    @UiField Hyperlink logout;
     @UiField FlowLayoutContainer charityList;
+    @UiField FlowLayoutContainer selectedCharities;
     @UiField TextField charityName;
 
     @Inject
@@ -31,18 +28,7 @@ public class HomePageView extends ViewImpl implements HomePagePresenter.MyView {
             GlobalDictionary dictionary) {
         initWidget(uiBinder.createAndBindUi(this));
     }
-
-    @Override
-    public void switchView(boolean loggedIn) {
-        login.setVisible(!loggedIn);
-        logout.setVisible(loggedIn);
-    }
-
-    @Override
-    public HasClickHandlers getLogoutButton() {
-        return logout;
-    }
-
+    
     @Override
     public void clear() {
         charityList.clear();
@@ -52,6 +38,8 @@ public class HomePageView extends ViewImpl implements HomePagePresenter.MyView {
     public void setInSlot(Object slot, IsWidget content) {
         if (slot == HomePagePresenter.TYPE_SetCharityItem) {
             charityList.add(content);
+        } else if (slot == HomePagePresenter.TYPE_SetSelectedCharityItem) {
+            selectedCharities.add(content);
         } else {
             super.setInSlot(slot, content);    
         }
@@ -65,5 +53,10 @@ public class HomePageView extends ViewImpl implements HomePagePresenter.MyView {
     @Override
     public HasText getCharitySearchText() {
         return charityName;
+    }
+
+    @Override
+    public void clearSelectedCharities() {
+        selectedCharities.clear();
     }
 }

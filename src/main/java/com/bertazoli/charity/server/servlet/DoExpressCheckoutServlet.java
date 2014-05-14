@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bertazoli.charity.server.businesslogic.DonateBusinessLogic;
-import com.bertazoli.charity.shared.beans.DonationInformation;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -31,7 +30,6 @@ public class DoExpressCheckoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String token = req.getParameter("token");
         String payerID = req.getParameter("PayerID");
-        DonationInformation donation = (DonationInformation) req.getSession().getAttribute("donation");
-        donateBL.doExpressCheckout(donation, token, payerID, req, resp);
+        donateBL.doExpressCheckout(token, payerID, req, resp);
     }
 }

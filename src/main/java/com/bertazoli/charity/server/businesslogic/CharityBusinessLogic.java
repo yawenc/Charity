@@ -18,6 +18,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 @Singleton
 public class CharityBusinessLogic extends BaseDAO<Charity> {
+    @Inject DonateBusinessLogic donationBL;
+    @Inject DrawBusinessLogic drawBL;
 
     @Inject
     public CharityBusinessLogic() {
@@ -58,6 +60,12 @@ public class CharityBusinessLogic extends BaseDAO<Charity> {
         try {
             ArrayList<Object> params = new ArrayList<Object>();
             StringBuilder sb = new StringBuilder("SELECT a FROM Charity a WHERE status = :status");
+            
+            if (searchParams.isAllCharitiesCurrentDraw()) {
+                Long drawId = drawBL.getCurrentDraw().getId();
+                sb.append(" AND id in (SELECT charityId from Donation WHERE drawId = ?)");
+                params.add(drawId);
+            }
             
             if (searchParams.getCharityId() != null && searchParams.getCharityId() != 0) {
                 sb.append(" AND id = ?");

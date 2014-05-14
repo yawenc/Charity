@@ -1,8 +1,17 @@
 package com.bertazoli.charity.server.businesslogic;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -14,7 +23,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.bertazoli.charity.shared.beans.Donation;
 import com.bertazoli.charity.shared.beans.User;
+import com.bertazoli.charity.shared.beans.UserTicket;
 import com.bertazoli.charity.shared.beans.UserToken;
 import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.util.Util;
@@ -58,6 +69,9 @@ public class UserBusinessLogic extends BaseDAO<User> {
             tx.begin();
             em.persist(userToken);
             tx.commit();
+            
+            // send email to user
+            sendEmailToUser(user, userToken);
 
             user.setPassword(null);
             user.setSalt(null);
@@ -71,6 +85,42 @@ public class UserBusinessLogic extends BaseDAO<User> {
         return user;
     }
 
+    private void sendEmailToUser(User user, UserToken userToken) throws ActionException {
+        Session session = getSession();
+ 
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("no-reply@bertazoli.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
+            message.setSubject("Activate your account");
+            message.setText("Please click on the link below to activate your account:\n\nhttp://bertazoli.com/Charity/activateUser?token="+userToken.getToken());
+ 
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new ActionException("failed to send email");
+        }
+    }
+
+    private Session getSession() {
+        final String username = "no-reply@bertazoli.com";
+        final String password = "1q2w3e4r";
+ 
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "mail.bertazoli.com");
+        props.put("mail.smtp.port", "26");
+ 
+        Session session = Session.getInstance(props,
+        new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+        return session;
+    }
+
     @Override
     public User retrieve(User object) {
         EntityManager em = createEntityManager();
@@ -79,6 +129,8 @@ public class UserBusinessLogic extends BaseDAO<User> {
             query.setParameter("id", object.getId());
             User user = query.setMaxResults(1).getSingleResult();
             return user;
+        } catch (NoResultException e) {
+            return null;
         } finally {
             em.close();
         }
@@ -188,5 +240,29 @@ public class UserBusinessLogic extends BaseDAO<User> {
             return user;
         }
         return null;
+    }
+
+    public void sendConfirmationToUser(Donation bean, ArrayList<UserTicket> tickets) {
+        Session session = getSession();
+        User user = new User();
+        user.setId(bean.getUserId());
+        user = retrieve(user);
+        
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("no-reply@bertazoli.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
+            message.setSubject("Your ticket number");
+            StringBuilder sb = new StringBuilder();
+            sb.append("Below are the ticket numbers related to your donation: \n");
+            for (UserTicket ticket : tickets) {
+                sb.append("Ticket #: " + ticket.getTicketNumber()+"\n");
+            }
+            message.setText(sb.toString());
+ 
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 }

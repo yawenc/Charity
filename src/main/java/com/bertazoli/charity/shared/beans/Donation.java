@@ -19,6 +19,7 @@ public class Donation implements IsSerializable {
     @Id @GeneratedValue private Long id;
     private Long userId;
     private Long drawId;
+    private Long charityId;
     private Timestamp donationDate;
     private String transaction;
     private CurrencyCodeType feeAmountCurrency;
@@ -27,6 +28,8 @@ public class Donation implements IsSerializable {
     private Double grossAmountValue;
     private PaymentStatusCodeType paymentStatus;
     private PaymentCodeType paymentType;
+    private Boolean completed;
+    private String paypalToken;
     public Long getId() {
         return id;
     }
@@ -92,5 +95,23 @@ public class Donation implements IsSerializable {
     }
     public void setPaymentType(PaymentCodeType paymentType) {
         this.paymentType = paymentType;
+    }
+    public Boolean getCompleted() {
+        return completed;
+    }
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+    public Long getCharityId() {
+        return charityId;
+    }
+    public void setCharityId(Long charityId) {
+        this.charityId = charityId;
+    }
+    public String getPaypalToken() {
+        return paypalToken;
+    }
+    public void setPaypalToken(String paypalToken) {
+        this.paypalToken = paypalToken;
     }
 }

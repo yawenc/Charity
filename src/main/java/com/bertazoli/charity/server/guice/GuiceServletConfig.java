@@ -11,7 +11,11 @@ import com.google.inject.servlet.ServletModule;
 public class GuiceServletConfig extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
-        return Guice.createInjector(new ServerModule(), new DispatchServletModule(), new ServletModule() {
+        return Guice.createInjector(
+                new ServerModule(),
+                new DispatchServletModule(),
+                new ScheduledJobModule(),
+                new ServletModule() {
             @Override
             protected void configureServlets() {
                 serve("/activateUser").with(ActivateUserServlet.class);

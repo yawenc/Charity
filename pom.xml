@@ -43,8 +43,17 @@
         <hibernate-entity-manager.version>4.3.1.Final</hibernate-entity-manager.version>
         <hibernate-annotations.version>3.5.6-Final</hibernate-annotations.version>
         
+        <!-- quartz -->
+        <quartz.version>2.2.1</quartz.version>
+        
         <!-- mysql -->
         <mysql-connector.version>5.1.29</mysql-connector.version>
+        
+        <!-- javamail -->
+        <javamail.version>1.4.7</javamail.version>
+        
+        <!-- paypal -->
+        <paypal.version>2.5.106</paypal.version>
 
         <target.jdk>1.6</target.jdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,6 +105,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
+                            <directory>src/main/webapp/WEB-INF/classes</directory>
                             <directory>src/main/webapp/Charity</directory>
                         </fileset>
                     </filesets>
@@ -141,7 +151,7 @@
                 <configuration>
                     <!-- With multiple tests use GwtTestSuite.java for speed -->
                     <includes>**/*GwtTest.java</includes>
-                    <extraJvmArgs>-Xmx512m -Xss1024k</extraJvmArgs>
+                    <extraJvmArgs>-Xmx1G -Xss56M</extraJvmArgs>
                     <copyWebapp>true</copyWebapp>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <runTarget>Charity.html</runTarget>
@@ -346,7 +356,19 @@
         <dependency>
             <groupId>com.paypal.sdk</groupId>
             <artifactId>merchantsdk</artifactId>
-            <version>2.5.106</version>
+            <version>${paypal.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${javamail.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
     </dependencies>
 </project>

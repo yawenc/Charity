@@ -28,11 +28,12 @@ import com.bertazoli.charity.shared.beans.enums.CharityStatus;
 
 public class CharityData {
     public static void main(String[] args) {
-        System.out.println("test");
+        CharityData cd = new CharityData();
+        cd.run();
     }
     
     public void run() {
-        String csvFile = System.getProperty("user.dir") + "/../../../Charities_results_2014-05-06-09-16-46.csv";
+        String csvFile = System.getProperty("user.dir") + "/database/data/Charities_results_2014-05-06-09-16-46.csv";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = "\t";

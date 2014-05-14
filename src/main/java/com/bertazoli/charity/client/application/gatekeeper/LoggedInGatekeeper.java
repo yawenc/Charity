@@ -14,7 +14,7 @@ import com.gwtplatform.mvp.client.proxy.Gatekeeper;
 public class LoggedInGatekeeper implements Gatekeeper {
 
     private EventBus eventBus;
-    private User currentUser;
+    protected User currentUser;
     private SecurityManager security;
 
     @Inject

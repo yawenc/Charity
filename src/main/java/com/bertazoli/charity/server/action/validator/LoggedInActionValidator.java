@@ -12,12 +12,12 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 public class LoggedInActionValidator implements ActionValidator {
 	
-	@Inject private Provider<HttpServletRequest> requestProvider;
+	@Inject protected Provider<HttpServletRequest> requestProvider;
 
 	@Override
 	public boolean isValid(Action<? extends Result> action) 	throws ActionException {
 		boolean result = true;
-		HttpSession session = requestProvider.get().getSession();
+		HttpSession session = requestProvider.get().getSession(true);
 		Object authenticated = session.getAttribute("login.authenticated");
 		
 		if (authenticated == null) {

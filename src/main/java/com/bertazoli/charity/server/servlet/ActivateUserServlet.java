@@ -28,9 +28,9 @@ public class ActivateUserServlet extends HttpServlet {
         if (!Util.isEmptyString(token)) {
             // try to activate user
             if (userBL.activateUser(token)) {
-                System.out.println("SUCCESS");
+                resp.sendRedirect("http://bertazoli.com/Charity/#login");
             } else {
-                System.out.println("ERROR");
+                resp.sendRedirect("http://bertazoli.com/Charity/#error");
             }
         }
     }
