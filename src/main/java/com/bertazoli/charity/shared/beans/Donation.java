@@ -20,6 +20,7 @@ public class Donation implements IsSerializable {
     private Long userId;
     private Long drawId;
     private Long charityId;
+    private Integer percentageToKeep;
     private Timestamp donationDate;
     private String transaction;
     private CurrencyCodeType feeAmountCurrency;
@@ -113,5 +114,11 @@ public class Donation implements IsSerializable {
     }
     public void setPaypalToken(String paypalToken) {
         this.paypalToken = paypalToken;
+    }
+    public Integer getPercentageToKeep() {
+        return percentageToKeep;
+    }
+    public void setPercentageToKeep(Integer percentageToKeep) {
+        this.percentageToKeep = percentageToKeep;
     }
 }

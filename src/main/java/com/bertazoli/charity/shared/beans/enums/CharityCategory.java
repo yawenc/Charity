@@ -1,7 +1,12 @@
 package com.bertazoli.charity.shared.beans.enums;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public enum CharityCategory {
+import com.bertazoli.charity.client.application.oracle.IsOracleData;
+
+
+public enum CharityCategory implements IsOracleData {
     CODE30("Anglican Parishes"),
     CODE33("Baha'is Religious Groups"),
     CODE31("Baptist Congregations"),
@@ -72,5 +77,20 @@ public enum CharityCategory {
     }
     public String getDescription() {
         return description;
+    }
+    @Override
+    public String id() {
+        return this.name();
+    }
+    @Override
+    public String description() {
+        return description;
+    }
+    public static List<IsOracleData> getValues() {
+        List<IsOracleData> data = new ArrayList<IsOracleData>();
+        for (CharityCategory value : values()) {
+            data.add(value);
+        }
+        return data;
     }
 }

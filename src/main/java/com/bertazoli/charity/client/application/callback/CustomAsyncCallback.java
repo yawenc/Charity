@@ -9,6 +9,7 @@ public abstract class CustomAsyncCallback<T> implements AsyncCallback<T> {
 
     @Override
     public void onFailure(Throwable caught) {
+        caught.printStackTrace();
         Label label = new Label(caught.getMessage());
         Popup popup = new Popup();
         popup.add(label);

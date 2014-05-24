@@ -20,7 +20,7 @@
                 <ui:msg description="effectiveDateOfStatus">Effective date of status</ui:msg>:
                 <f:DateField ui:field="effectiveDateOfStatus" />
                 <ui:msg description="category">Category</ui:msg>:
-                <f:TextField ui:field="category" />
+                <g:SimplePanel ui:field="category" />
                 <g:SimplePanel ui:field="countryPanel" />
                 <g:SimplePanel ui:field="statePanel" />
                 <b:TextButton ui:field="send"><ui:msg description="send">Send</ui:msg></b:TextButton>

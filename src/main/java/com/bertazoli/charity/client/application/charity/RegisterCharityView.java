@@ -2,8 +2,10 @@ package com.bertazoli.charity.client.application.charity;
 
 import javax.inject.Inject;
 
+import com.bertazoli.charity.client.application.oracle.ComboBoxWithEnum;
 import com.bertazoli.charity.client.application.oracle.ComboBoxWithOracle;
 import com.bertazoli.charity.client.application.oracle.IsOracleData;
+import com.bertazoli.charity.shared.beans.enums.CharityCategory;
 import com.bertazoli.charity.shared.beans.oracle.filter.ConfigFilter;
 import com.bertazoli.charity.shared.beans.oracle.type.CountryOracleConfig;
 import com.bertazoli.charity.shared.beans.oracle.type.StateOracleConfig;
@@ -27,18 +29,23 @@ public class RegisterCharityView extends ViewImpl implements RegisterCharityPres
     @UiField TextField name;
     @UiField TextField registrationNumber;
     @UiField DateField effectiveDateOfStatus;
-    @UiField TextField category;
     @UiField TextButton send;
+    @UiField SimplePanel category;
     @UiField SimplePanel countryPanel;
     @UiField SimplePanel statePanel;
     private ComboBoxWithOracle<CountryOracleConfig> countryCombobox;
     private ComboBoxWithOracle<StateOracleConfig> stateCombobox;
+    private ComboBoxWithEnum categoryCombobox;
 
     @Inject
     RegisterCharityView(Binder uiBinder,
             Provider<ComboBoxWithOracle<CountryOracleConfig>> countryComboProvider,
-            Provider<ComboBoxWithOracle<StateOracleConfig>> stateComboProvider) {
+            Provider<ComboBoxWithOracle<StateOracleConfig>> stateComboProvider,
+            Provider<ComboBoxWithEnum> categoryProvider) {
         initWidget(uiBinder.createAndBindUi(this));
+        categoryCombobox = categoryProvider.get();
+        categoryCombobox.addData(CharityCategory.getValues());
+        category.add(categoryCombobox.getComboBox());
         countryCombobox = countryComboProvider.get();
         countryPanel.add(countryCombobox.getComboBox());
         stateCombobox = stateComboProvider.get();

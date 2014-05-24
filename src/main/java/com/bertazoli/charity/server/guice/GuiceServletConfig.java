@@ -14,7 +14,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         return Guice.createInjector(
                 new ServerModule(),
                 new DispatchServletModule(),
-                new ScheduledJobModule(),
                 new ServletModule() {
             @Override
             protected void configureServlets() {

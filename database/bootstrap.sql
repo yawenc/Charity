@@ -95,6 +95,7 @@ CREATE TABLE donation (
   userId int(11) NOT NULL,
   drawId int(11) NOT NULL,
   charityId int(11) NOT NULL,
+  percentageToKeep int(11),
   donationDate timestamp NOT NULL,
   transaction varchar(30) NOT NULL,
   feeAmountCurrency varchar(3),

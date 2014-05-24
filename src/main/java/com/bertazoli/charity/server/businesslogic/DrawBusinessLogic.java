@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.bertazoli.charity.shared.action.admin.RunDrawResult;
@@ -82,9 +83,9 @@ public class DrawBusinessLogic {
 
     public RunDrawResult runDraw() {
         Draw currentDraw = getCurrentDraw();
-        currentDraw.setStatus(DrawStatus.FINALIZED);
-        save(currentDraw);
-        createDrawIfNotExists(new Date());
+//        currentDraw.setStatus(DrawStatus.FINALIZED);
+//        save(currentDraw);
+//        createDrawIfNotExists(new Date());
         
         // get winner
         calculatePrize(currentDraw);
@@ -95,10 +96,14 @@ public class DrawBusinessLogic {
     private void calculatePrize(Draw bean) {
         List<UserTicket> donations = null;
         EntityManager em = BaseDAO.createEntityManager();
-        TypedQuery<UserTicket> query = em.createQuery("SELECT a From UserTicket a JOIN Donation b ON (a.donationId = b.id)", UserTicket.class);
+        Query query = em.createNativeQuery("SELECT a.* FROM user_ticket a JOIN donation b ON (a.donationId = b.id) AND b.drawId = :drawId", UserTicket.class);
+        query.setParameter("drawId", bean.getId());
         
         donations = query.getResultList();
         
+        int quantity = donations.size();
+        int selectedNumber = (int) (Math.random() * quantity);
+        System.out.println(donations.get(selectedNumber).getTicketNumber());
     }
 
     private void save(Draw bean) {

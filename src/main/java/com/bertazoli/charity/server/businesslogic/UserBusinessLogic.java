@@ -27,6 +27,7 @@ import com.bertazoli.charity.shared.beans.Donation;
 import com.bertazoli.charity.shared.beans.User;
 import com.bertazoli.charity.shared.beans.UserTicket;
 import com.bertazoli.charity.shared.beans.UserToken;
+import com.bertazoli.charity.shared.beans.enums.UserRole;
 import com.bertazoli.charity.shared.exceptions.ValidationException;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
@@ -59,6 +60,7 @@ public class UserBusinessLogic extends BaseDAO<User> {
             user.setSalt(salt);
             user.setActivated(false);
             user.setCreatedOn(new Timestamp(new Date().getTime()));
+            user.setUserRole(UserRole.USER);
             tx.begin();
             em.persist(user);
             tx.commit();

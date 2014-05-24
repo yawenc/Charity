@@ -26,6 +26,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.hibernate.Session;
+
 import urn.ebay.api.PayPalAPI.DoExpressCheckoutPaymentReq;
 import urn.ebay.api.PayPalAPI.DoExpressCheckoutPaymentRequestType;
 import urn.ebay.api.PayPalAPI.DoExpressCheckoutPaymentResponseType;
@@ -47,6 +49,7 @@ import com.bertazoli.charity.shared.Constants;
 import com.bertazoli.charity.shared.beans.Donation;
 import com.bertazoli.charity.shared.beans.DonationInformation;
 import com.bertazoli.charity.shared.beans.User;
+import com.bertazoli.charity.shared.beans.UserDonation;
 import com.bertazoli.charity.shared.beans.UserTicket;
 import com.bertazoli.charity.shared.util.Util;
 import com.google.inject.Inject;
@@ -258,6 +261,7 @@ public class DonateBusinessLogic {
                             Calendar c2 = cal.toGregorianCalendar();
                             bean.setDonationDate(new Timestamp(c2.getTime().getTime()));
                             bean.setTransaction(result.getTransactionID());
+                            bean.setPercentageToKeep(donation.getPercentageToKeep());
                             bean.setFeeAmountCurrency(result.getFeeAmount().getCurrencyID());
                             bean.setFeeAmountValue(Double.parseDouble(result.getFeeAmount().getValue()));
                             bean.setGrossAmountCurrency(result.getGrossAmount().getCurrencyID());
@@ -367,5 +371,19 @@ public class DonateBusinessLogic {
         } catch (Exception e) {
             return 0.0;
         }
+    }
+
+    public ArrayList<UserDonation> searchMyDonations() {
+        Long userId = (Long) requestProvider.get().getSession().getAttribute("user.id");
+        EntityManager em = BaseDAO.createEntityManager();
+        Session session = em.unwrap(Session.class);
+        org.hibernate.Query q = session.createQuery("SELECT d.id, d.userId, d.drawId, d.charityId, d.donationDate, d.grossAmountValue, c.name as charityName FROM donation d JOIN charity c ON (d.charityId = c.id) WHERE d.completed IS TRUE and d.userId = :userId");
+        
+        Query query = em.createNativeQuery("SELECT d.id, d.userId, d.drawId, d.charityId, d.donationDate, d.grossAmountValue, c.name as charityName FROM donation d JOIN charity c ON (d.charityId = c.id) WHERE d.completed IS TRUE and d.userId = :userId");
+        
+        query.setParameter("userId", userId);
+        ArrayList<UserDonation> donations = (ArrayList<UserDonation>) query.getResultList();
+        
+        return donations;
     }
 }

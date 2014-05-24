@@ -3,6 +3,7 @@
              xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
              xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container">
     <g:HTMLPanel>
-        
+        <ui:msg description="myDonations">My donations</ui:msg>
+        <g:HTMLPanel ui:field="donationList" />
     </g:HTMLPanel>
 </ui:UiBinder>

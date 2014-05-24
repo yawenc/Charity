@@ -13,9 +13,7 @@ public class SearchUsernameHandler implements ActionHandler<SearchUsernameAction
 
     @Override
     public SearchUsernameResult execute(SearchUsernameAction action, ExecutionContext context) throws ActionException {
-        Boolean exists = true;
-        exists = userBusinessLogic.searchUsername(action.getUsername());
-        return new SearchUsernameResult(exists);
+        return new SearchUsernameResult(userBusinessLogic.searchUsername(action.getUsername()));
     }
 
     @Override
